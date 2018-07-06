@@ -40,13 +40,14 @@ There one can use commands like the above `mco rpc` commands to target the entir
   * Standardised configuration
   * TLS using PuppetCA or manual configuration
   * Expose Facts to the Choria discovery system
+  * Authorization of Read Only and Full access based on certificate of the client
 
 ## Roadmap
 
   * Ability to add your own actions to the agent
   * Ability to pass in entire agents into the running instance
   * Generation of DDL files
-  
+
 ## Embeding
 
 To embed this backplane in your own Go code you need to implement a few interfaces.
@@ -117,7 +118,7 @@ Here the `Work()` method will do some work every 500 milliseconds unless the sys
 
 ### Configure Choria
 
-You have to supply some basic configuration to the Choria framework, you need to implement the `ConfigProvider` interface, you're welcome to do this yourself but we provide one you can use:
+You have to supply some basic configuration to the Choria framework, you need to implement the `ConfigProvider` interface, you're welcome to do this yourself but we provide one you can use.  We recommend we use this one so that all backplane managed interface have the same configuration format:
 
 ```go
 type Config struct {
@@ -132,6 +133,7 @@ You config file might look like this:
 
 ```yaml
 # your own config here
+interval: 600
 
 # Backplane specific configuration here
 management:
@@ -144,12 +146,29 @@ management:
         cert: /path/to/cert.pem
         key: /path/to/key.pem
         cache: /path/to/ssl_cache
-        
+
+    auth:
+        full:
+            - sre.choria
+
+        read_only:
+            - 1stline.choria
+
     brokers:
         - choria1.example.net:4222
         - choria2.example.net:4222
 ```
 
+#### Authorization
+
+Authorization is supported by a simple allow all, allow readonly or insecure flags. The configuration above allows the user `sre.choria` to pause, resume and flip the service while the `1stline.choria` user can get info.
+
+Authorization can be disabled with the following:
+
+```yaml
+auth:
+    insecure: true
+```
 
 #### TLS
 

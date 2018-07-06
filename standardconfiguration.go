@@ -4,11 +4,12 @@ package backplane
 // you can use this as a helper in your own code
 // to give users the ability to configure the backplane
 type StandardConfiguration struct {
-	Brokers     []string `json:"brokers" yaml:"brokers"`
-	Collective  string   `json:"collective" yaml:"collective"`
-	LogFilePath string   `json:"logfile" yaml:"logfile"`
-	Loglevel    string   `json:"loglevel" yaml:"loglevel"`
-	TLSConf     *TLSConf `json:"tls" yaml:"tls"`
+	Brokers       []string      `json:"brokers" yaml:"brokers"`
+	Collective    string        `json:"collective" yaml:"collective"`
+	LogFilePath   string        `json:"logfile" yaml:"logfile"`
+	Loglevel      string        `json:"loglevel" yaml:"loglevel"`
+	TLSConf       *TLSConf      `json:"tls" yaml:"tls"`
+	Authorization Authorization `json:"auth" yaml:"auth"`
 }
 
 // MiddlewareHosts is the hosts that runs Choria Brokers in host:port format
@@ -34,4 +35,9 @@ func (s *StandardConfiguration) LogLevel() string {
 // TLS is the TLS configuration
 func (s *StandardConfiguration) TLS() *TLSConf {
 	return s.TLSConf
+}
+
+// Auth is the authorized certificates for the backplane
+func (s *StandardConfiguration) Auth() Authorization {
+	return s.Authorization
 }
