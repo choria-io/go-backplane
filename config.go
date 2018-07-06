@@ -27,13 +27,13 @@ type Config struct {
 
 // TLSConf describes the TLS config for a NATS connection
 type TLSConf struct {
-	Identity string `json:"identity"`
-	SSLDir   string `json:"ssl_dir"`
-	Scheme   string `json:"scheme"`
-	CA       string `json:"ca"`
-	Cert     string `json:"cert"`
-	Key      string `json:"key"`
-	Cache    string `json:"cache"`
+	Identity string `json:"identity" yaml:"identity"`
+	SSLDir   string `json:"ssl_dir" yaml:"ssl_dir"`
+	Scheme   string `json:"scheme" yaml:"scheme"`
+	CA       string `json:"ca" yaml:"ca"`
+	Cert     string `json:"cert" yaml:"cert"`
+	Key      string `json:"key" yaml:"key"`
+	Cache    string `json:"cache" yaml:"cache"`
 }
 
 // ConfigProvider provides management backplane configuration
