@@ -1,0 +1,12 @@
+package: github.com/choria-io/go-backplane
+import:
+- package: github.com/choria-io/go-choria
+  subpackages:
+  - choria
+  - config
+  - mcorpc
+  - mcorpc/golang
+  - server
+  - server/agents
+- package: github.com/sirupsen/logrus
+  version: ^1
