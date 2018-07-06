@@ -1,6 +1,8 @@
 # Choria Management Backplane
 
-This is a embedable Choria Server that you can use to provide a backplane for your application.
+This is a embedable Choria Server that you can use to provide a backplane for your Golang application.
+
+You can use it to provide a secure, scalable and flexibile managment interface right inside your application with no dependencies other than a Choria broker infrastructure.
 
 At present it is focussed on creating a circuit breaker that allow you to pause/resume/query the circuit breaker status of a large fleet of (micro)services.
 
