@@ -204,7 +204,7 @@ Above we built a simple pausable application that does some work unless paused, 
 ```go
 func (a *App) startBackPlane(ctx context.Context, wg *sync.Waitgroup) error {
     if a.config.Management != nil {
-        _, err := backplane.Run(ctx, wg, "app", a.config, backplane.ManageFactSource(a.config), backplane.ManagePausable(a))
+        _, err := backplane.Run(ctx, wg, "app", a.config.Management, backplane.ManageFactSource(a.config), backplane.ManagePausable(a))
 		if err != nil {
 			return err
 		}
