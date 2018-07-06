@@ -10,6 +10,7 @@ import (
 
 // Config configures the backplane
 type Config struct {
+	auth         Authorization
 	brokers      []string
 	collectives  []string
 	logfile      string
@@ -43,6 +44,7 @@ type ConfigProvider interface {
 	LogFile() string
 	LogLevel() string
 	TLS() *TLSConf
+	Auth() Authorization
 }
 
 // Option is a func that can configure the backplane
@@ -61,6 +63,7 @@ func newConfig(name string, cfg ConfigProvider, opts ...Option) (c *Config, err 
 	c.logfile = cfg.LogFile()
 	c.loglevel = cfg.LogLevel()
 	c.tls = cfg.TLS()
+	c.auth = cfg.Auth()
 
 	for _, opt := range opts {
 		opt(c)

@@ -41,13 +41,39 @@ func (m *Management) startAgents(ctx context.Context) (err error) {
 	agent := mcorpc.New(md.Name, md, m.cfg.fw, m.log.WithField("agent", md.Name))
 
 	if m.cfg.pausable != nil {
-		agent.MustRegisterAction("info", m.infoAction)
-		agent.MustRegisterAction("pause", m.pauseAction)
-		agent.MustRegisterAction("resume", m.resumeAction)
-		agent.MustRegisterAction("flip", m.flipAction)
+		agent.MustRegisterAction("info", m.roAction(m.infoAction))
+		agent.MustRegisterAction("pause", m.fullAction(m.pauseAction))
+		agent.MustRegisterAction("resume", m.fullAction(m.resumeAction))
+		agent.MustRegisterAction("flip", m.fullAction(m.flipAction))
 	}
 
 	return m.cserver.RegisterAgent(ctx, md.Name, agent)
+}
+
+func (m *Management) roAction(a mcorpc.Action) mcorpc.Action {
+	return func(ctx context.Context, req *mcorpc.Request, reply *mcorpc.Reply, agent *mcorpc.Agent, conn choria.ConnectorInfo) {
+		if !m.cfg.auth.ROAllowed(req.CallerID) {
+			reply.Statuscode = mcorpc.Aborted
+			reply.Statusmsg = "You are not authorized to call this agent or action."
+
+			return
+		}
+
+		a(ctx, req, reply, agent, conn)
+	}
+}
+
+func (m *Management) fullAction(a mcorpc.Action) mcorpc.Action {
+	return func(ctx context.Context, req *mcorpc.Request, reply *mcorpc.Reply, agent *mcorpc.Agent, conn choria.ConnectorInfo) {
+		if !m.cfg.auth.FullAllowed(req.CallerID) {
+			reply.Statuscode = mcorpc.Aborted
+			reply.Statusmsg = "You are not authorized to call this agent or action."
+
+			return
+		}
+
+		a(ctx, req, reply, agent, conn)
+	}
 }
 
 func (m *Management) pauseAction(ctx context.Context, req *mcorpc.Request, reply *mcorpc.Reply, agent *mcorpc.Agent, conn choria.ConnectorInfo) {
