@@ -10,3 +10,5 @@ import:
   - server/agents
 - package: github.com/sirupsen/logrus
   version: ^1
+- package: gopkg.in/alecthomas/kingpin.v2
+  version: ^2.2.6
