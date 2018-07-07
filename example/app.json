@@ -1,0 +1,120 @@
+{
+   "$schema": "https://choria.io/schemas/mcorpc/ddl/v1/agent.json",
+   "metadata": {
+      "license": "Apache-2.0",
+      "author": "R.I.Pienaar \u003crip@devco.net\u003e",
+      "timeout": 10,
+      "name": "app",
+      "version": "0.0.1",
+      "url": "https://choria.io",
+      "description": "Choria Management Backplane"
+   },
+   "actions": [
+      {
+         "action": "ping",
+         "input": {},
+         "output": {
+            "version": {
+               "description": "The version of the Choria Backplane system in use",
+               "display_as": "Choria Backplane",
+               "default": "0.0.0"
+            }
+         },
+         "display": "failed",
+         "description": "Backplane communications test"
+      },
+      {
+         "action": "stop",
+         "input": {},
+         "output": {
+            "delay": {
+               "description": "How long after running the action the shutdown will be initiated",
+               "display_as": "Delay",
+               "default": ""
+            }
+         },
+         "display": "failed",
+         "description": "Stops the managed service"
+      },
+      {
+         "action": "health",
+         "input": {},
+         "output": {
+            "healthy": {
+               "description": "Status indicator for the checked service",
+               "display_as": "Healthy",
+               "default": false
+            },
+            "result": {
+               "description": "The result from the check method",
+               "display_as": "Result",
+               "default": ""
+            }
+         },
+         "display": "failed",
+         "description": "Checks the health of the managed service"
+      },
+      {
+         "action": "info",
+         "input": {},
+         "output": {
+            "facts": {
+               "description": "Application Facts",
+               "display_as": "Facts",
+               "default": {}
+            },
+            "paused": {
+               "description": "Paused State",
+               "display_as": "Paused",
+               "default": false
+            },
+            "version": {
+               "description": "Application Version",
+               "display_as": "Version",
+               "default": ""
+            }
+         },
+         "display": "always",
+         "description": "info"
+      },
+      {
+         "action": "pause",
+         "input": {},
+         "output": {
+            "paused": {
+               "description": "Paused State",
+               "display_as": "Paused",
+               "default": false
+            }
+         },
+         "display": "always",
+         "description": "pause"
+      },
+      {
+         "action": "resume",
+         "input": {},
+         "output": {
+            "paused": {
+               "description": "Paused State",
+               "display_as": "Paused",
+               "default": false
+            }
+         },
+         "display": "always",
+         "description": "resume"
+      },
+      {
+         "action": "flip",
+         "input": {},
+         "output": {
+            "paused": {
+               "description": "Paused State",
+               "display_as": "Paused",
+               "default": false
+            }
+         },
+         "display": "always",
+         "description": "flip"
+      }
+   ]
+}

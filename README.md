@@ -56,6 +56,8 @@ While a similar outcome can be achieved with a side car model - simply write a R
 
 To embed this backplane in your own Go code you need to implement a few interfaces, not all are required you can selectively enable just what you need.
 
+**NOTE:** A working example is in the [example](example) directory
+
 ### Health Checks
 
 To allow your application to be health checked you need to implement the `HealthCheckAble` interface, a simple version is here:
@@ -259,9 +261,9 @@ func (a *App) startBackPlane(ctx context.Context, wg *sync.Waitgroup) error {
         }
 
         _, err := backplane.Run(ctx, wg, "app", a.config.Management, opts...)
-		if err != nil {
-			return err
-		}
+        if err != nil {
+            return err
+        }
     }
 
     return nil

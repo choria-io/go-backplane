@@ -143,7 +143,7 @@ func (m *Management) healthAction(ctx context.Context, req *mcorpc.Request, repl
 }
 
 func (m *Management) stopAction(ctx context.Context, req *mcorpc.Request, reply *mcorpc.Reply, agent *mcorpc.Agent, conn choria.ConnectorInfo) {
-	delay := time.Duration(rand.Intn(int(m.cfg.maxStopDelay)))*time.Second + time.Second
+	delay := time.Duration(rand.Intn(int(m.cfg.maxStopDelay))) + time.Second
 
 	r := func(d time.Duration) {
 		time.Sleep(d)

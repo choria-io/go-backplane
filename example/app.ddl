@@ -1,11 +1,9 @@
-package main
 
-var ddlTempl = `
-metadata    :name        => "{{.Name}}",
+metadata    :name        => "app",
             :description => "Choria Management Backplane",
             :author      => "R.I.Pienaar <rip@devco.net>",
             :license     => "Apache-2.0",
-            :version     => "{{.Version}}",
+            :version     => "0.0.1",
             :url         => "https://choria.io/",
             :timeout     => 10
 
@@ -19,7 +17,7 @@ action "ping", :description => "Backplane communications test" do
     end   
 end
             
-{{if .Health}}
+
 action "health", :description => "Checks the health of the managed service" do
     output :result,
             :description => "The result from the check method",
@@ -34,17 +32,17 @@ action "health", :description => "Checks the health of the managed service" do
         aggregate summary(:healthy)
     end   
 end
-{{end}}
 
-{{if .Stop}}
+
+
 action "stop", :description => "Stops the managed service" do
     output :delay,
             :description => "How long after running the action the shutdown will be initiated",
             :display_as => "Delay"
 end
-{{end}}
 
-{{if .Pause}}
+
+
 ["info", "pause", "resume", "flip"].each do |act|
     action act, :description => act do
         display :always
@@ -69,5 +67,4 @@ end
         end
     end
 end
-{{end}}
-`
+
