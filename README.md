@@ -21,10 +21,6 @@ $ mco rpc myapp resume -W dc=DC1
 ```
 
 ```
-$ mco rpc myapp info -W dc=DC1
-```
-
-```
 $ mco rpc myapp health -W dc=DC1
 ```
 
@@ -54,7 +50,7 @@ Instead one would set up a central management Choria infrastructure where these 
 
 ## Embeding
 
-To embed this backplane in your own Go code you need to implement a few interfaces.
+To embed this backplane in your own Go code you need to implement a few interfaces, not all are required you can selectively enable just what you need.
 
 ### Health Checks
 
@@ -80,11 +76,11 @@ func (a *App) 	HealthCheck() (result interface{}, ok bool) {
         Configured: a.configured,
     }
 
-    return r, r != nil
+    return r, a.configured
 }
 ```
 
-The example is obviously super simple, you can do any internal health checks you desired, I suggest keeping it fast and not testing remote APIs if you run many managed services.
+The example is obviously over simple and achieves very little, you can do any internal health checks you desired, I suggest keeping it fast and not testing remote APIs if you run many managed services.
 
 Your result should be a structure - or something that satisfies the json interfaces.
 
