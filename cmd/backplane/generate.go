@@ -14,12 +14,18 @@ import (
 )
 
 type ddl struct {
-	Name     string
-	Version  string
-	Pausable bool
+	Name    string
+	Version string
+	Pause   bool
+	Health  bool
+	Stop    bool
 }
 
 func generate() {
+	if !(healthable || stopable || pausable) {
+		kingpin.Fatalf("Please specify what interfaces to generate, see --help")
+	}
+
 	kingpin.FatalIfError(generateJSON(), "Could not generate JSON DDL")
 	kingpin.FatalIfError(generateDDL(), "Could not generate Ruby DDL")
 
@@ -34,9 +40,11 @@ func generateDDL() error {
 	}
 
 	d := ddl{
-		Name:     name,
-		Pausable: pausable,
-		Version:  backplane.Version,
+		Name:    name,
+		Version: backplane.Version,
+		Pause:   pausable,
+		Health:  healthable,
+		Stop:    stopable,
 	}
 
 	tmpl := template.New("ddl")
@@ -74,10 +82,52 @@ func generateJSON() error {
 			Version:     backplane.Version,
 			License:     "Apache-2.0",
 			URL:         "https://choria.io",
-			Timeout:     2,
+			Timeout:     10,
 		},
 		Actions: []*agent.Action{},
 		Schema:  "https://choria.io/schemas/mcorpc/ddl/v1/agent.json",
+	}
+
+	if stopable {
+		act := &agent.Action{
+			Name:        "stop",
+			Description: "Stops the managed service",
+			Display:     "failed",
+			Input:       json.RawMessage("{}"),
+			Output:      make(map[string]*agent.ActionOutputItem),
+		}
+
+		act.Output["delay"] = &agent.ActionOutputItem{
+			Default:     "",
+			Description: "How long after running the action the shutdown will be initiated",
+			DisplayAs:   "Delay",
+		}
+
+		ddl.Actions = append(ddl.Actions, act)
+	}
+
+	if healthable {
+		act := &agent.Action{
+			Name:        "health",
+			Description: "Checks the health of the managed service",
+			Display:     "failed",
+			Input:       json.RawMessage("{}"),
+			Output:      make(map[string]*agent.ActionOutputItem),
+		}
+
+		act.Output["result"] = &agent.ActionOutputItem{
+			Default:     "",
+			Description: "The result from the check method",
+			DisplayAs:   "Result",
+		}
+
+		act.Output["healthy"] = &agent.ActionOutputItem{
+			Default:     false,
+			Description: "Status indicator for the checked service",
+			DisplayAs:   "Healthy",
+		}
+
+		ddl.Actions = append(ddl.Actions, act)
 	}
 
 	if pausable {
@@ -114,7 +164,7 @@ func generateJSON() error {
 		}
 	}
 
-	j, err := json.Marshal(ddl)
+	j, err := json.MarshalIndent(ddl, "", "   ")
 	if err != nil {
 		return err
 	}

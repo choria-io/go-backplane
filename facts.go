@@ -47,7 +47,7 @@ func (m *Management) fsWriter(ctx context.Context, wg *sync.WaitGroup, fs FactSo
 
 	for {
 		select {
-		case <-time.Tick(m.cfg.factinterval):
+		case <-time.Tick(m.cfg.factInterval):
 			writer()
 		case <-ctx.Done():
 			return

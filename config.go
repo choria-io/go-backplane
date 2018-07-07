@@ -19,11 +19,15 @@ type Config struct {
 	name         string
 	provider     ConfigProvider
 	opts         []Option
-	pausable     Pausable
-	factsource   FactSource
 	fw           *choria.Framework
 	ccfg         *chconf.Config
-	factinterval time.Duration
+	factInterval time.Duration
+	maxStopDelay time.Duration
+
+	pausable        Pausable
+	factsource      FactSource
+	healthcheckable HealthCheckable
+	stopable        Stopable
 }
 
 // TLSConf describes the TLS config for a NATS connection
@@ -54,7 +58,8 @@ func newConfig(name string, cfg ConfigProvider, opts ...Option) (c *Config, err 
 	c = &Config{
 		name:         name,
 		provider:     cfg,
-		factinterval: 600 * time.Second,
+		factInterval: 600 * time.Second,
+		maxStopDelay: 10 * time.Second,
 		opts:         opts,
 	}
 
@@ -133,6 +138,22 @@ func ManagePausable(p Pausable) Option {
 	}
 }
 
+// ManageHealthCheck supplies a class that can be health checked using the
+// management agent, without supplying this the health action will not be available
+func ManageHealthCheck(h HealthCheckable) Option {
+	return func(c *Config) {
+		c.healthcheckable = h
+	}
+}
+
+// ManageStopable supplies a class that can be stopped using the management
+// agent, without supplying this the stop action will not be available
+func ManageStopable(s Stopable) Option {
+	return func(c *Config) {
+		c.stopable = s
+	}
+}
+
 // ManageFactSource configures a fact source for discovery data
 // without supplying a factsource only basic discoverable data will be provided
 func ManageFactSource(f FactSource) Option {
@@ -144,6 +165,13 @@ func ManageFactSource(f FactSource) Option {
 // FactWriteInterval is the frequency that facts will be written to disk, 600 seconds is default
 func FactWriteInterval(i time.Duration) Option {
 	return func(c *Config) {
-		c.factinterval = i
+		c.factInterval = i
+	}
+}
+
+// MaxStopDelay is the maximum time to wait before calling stop
+func MaxStopDelay(i time.Duration) Option {
+	return func(c *Config) {
+		c.maxStopDelay = i
 	}
 }

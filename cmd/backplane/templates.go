@@ -7,9 +7,34 @@ metadata    :name        => "{{.Name}}",
             :license     => "Apache-2.0",
             :version     => "{{.Version}}",
             :url         => "https://choria.io/",
-            :timeout     => 2
+            :timeout     => 10
 
-{{if .Pausable}}
+{{if .Health}}
+action "health", :description => "Checks the health of the managed service" do
+    output :result,
+            :description => "The result from the check method",
+            :display_as => "Result"
+
+    output :healthy,
+            :description => "Status indicator for the checked service",
+            :display_as => "Healthy",
+            :default => false
+
+    summarize do
+        aggregate summary(:healthy)
+    end   
+end
+{{end}}
+
+{{if .Stop}}
+action "stop", :description => "Stops the managed service" do
+    output :delay,
+            :description => "How long after running the action the shutdown will be initiated",
+            :display_as => "Delay"
+end
+{{end}}
+
+{{if .Pause}}
 ["info", "pause", "resume", "flip"].each do |act|
     action act, :description => act do
         display :always
