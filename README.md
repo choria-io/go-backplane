@@ -13,15 +13,15 @@ Once embedded you can manage your fleet with commands like this:
 Pause, resume and request info for all services in `DC1`
 
 ```
-$ mco rpc circuit pause -W dc=DC1
+$ mco rpc myapp pause -W dc=DC1
 ```
 
 ```
-$ mco rpc circuit resume -W dc=DC1
+$ mco rpc myapp resume -W dc=DC1
 ```
 
 ```
-$ mco rpc circuit info -W dc=DC1
+$ mco rpc myapp info -W dc=DC1
 ```
 
 Your system can also expose it's configuration and other items as facts that can be used for fine tuned targeting of actions
@@ -32,9 +32,7 @@ It's typical for applications to expose REST interfaces that let one do things l
 
 At scale though where one have 30+ DCs with machines behind various layers of bastion node and so forth this model rapidly breaks down as you'll have machine generated hostnames and ports.  It becomes impossible to know what services are where and just gaining access to a HTTP port in all your data centers is a problem.
 
-Instead by relying on the Choria discovery system one would set up a central management Choria infrastructure where these managed microservices will connect to.  The services connect out to the management network which is much easier to manage from a security perspective.
-
-There one can use commands like the above `mco rpc` commands to target the entire fleet of microservices at the same time giving you rapid access to these essential circuit breaking facilities.
+Instead one would set up a central management Choria infrastructure where these managed microservices will connect to.  The services connect out to the management network which is much easier to manage from a security perspective. Using the Choria discovery features you can target all or subsets of Microservices across your entire multi DC fleet in a fast way from either the CLI, Ruby API, Golang APIs or Choria Playbooks.
 
 ## Features
 
@@ -48,7 +46,9 @@ There one can use commands like the above `mco rpc` commands to target the entir
 
   * Ability to add your own actions to the agent
   * Ability to pass in entire agents into the running instance
-  * Generation of DDL files
+  * Health check endpoint
+  * Thread dump endpoint
+  * Shutdown endpoint
 
 ## Embeding
 
@@ -120,12 +120,12 @@ Here the `Work()` method will do some work every 500 milliseconds unless the sys
 
 ### Configure Choria
 
-You have to supply some basic configuration to the Choria framework, you need to implement the `ConfigProvider` interface, you're welcome to do this yourself but we provide one you can use.  We recommend we use this one so that all backplane managed interface have the same configuration format:
+You have to supply some basic configuration to the Choria framework, you need to implement the `ConfigProvider` interface, you're welcome to do this yourself but we provide one you can use.  We recommend you use this one so that all backplane managed interface have the same configuration format:
 
 ```go
 type Config struct {
-    Interval int
-    Management *backplane.StandardConfiguration `json:"management" yaml:"management"`
+    Interval int `yaml:"interval"`
+    Management *backplane.StandardConfiguration `yaml:"management"`
 }
 ```
 
@@ -137,7 +137,7 @@ You config file might look like this:
 # your own config here
 interval: 600
 
-# Backplane specific configuration here
+# Standard Backplane specific configuration here
 management:
     collective: app
     logfile: "/var/log/app/backplane.log"
@@ -161,9 +161,9 @@ management:
         - choria2.example.net:4222
 ```
 
-#### Authorization
+#### Authorization
 
-Authorization is supported by a simple allow all, allow readonly or insecure flags. The configuration above allows the user `sre.choria` to pause, resume and flip the service while the `1stline.choria` user can get info.
+Authorization is supported by a simple allow all, allow readonly or insecure flags. The configuration above allows the user `sre.choria` to pause, resume and flip the service while the `1stline.choria` user can get info. The strings supplied are treated as Regular Expressions.
 
 Authorization can be disabled with the following:
 
@@ -217,3 +217,16 @@ func (a *App) startBackPlane(ctx context.Context, wg *sync.Waitgroup) error {
 ```
 
 Once you call `startBackPlane()` in your startup cycle it will start a Choria instance with the `discovery`, `choria_util` and `app` agents, the app agent will have `info`, `pause`, `resume` and `flip` actions, your config will be shown in the `info` action and you can discovery it using any of the facts.
+
+### Configuring Choria CLI and API clients
+
+To interact with the service from the CLI, Ruby Client API or Choria Go Client API you need a description of the service.
+
+A tool to create these are included and you should distribute these files to your client in the Choria lib directories - typically `/opt/puppetlabs/mcollective/plugins/mcollective/agent`.
+
+```
+$ go get github.com/choria-io/go-backplane/cmd/backplane
+$ backplane generate --name yourapp
+```
+
+You'll now have `yourapp.json` and `yourapp.ddl` in the current directory, distribute those files to your library dirs as with any other Choria agent.
