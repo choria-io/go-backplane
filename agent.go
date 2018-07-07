@@ -49,6 +49,10 @@ type simpleReply struct {
 	Paused bool `json:"paused"`
 }
 
+type pingReply struct {
+	Version string `json:"version"`
+}
+
 func (m *Management) startAgents(ctx context.Context) (err error) {
 	md := &agents.Metadata{
 		Name:        m.cfg.name,
@@ -76,6 +80,8 @@ func (m *Management) startAgents(ctx context.Context) (err error) {
 	if m.cfg.healthcheckable != nil {
 		agent.MustRegisterAction("health", m.roAction(m.healthAction))
 	}
+
+	agent.MustRegisterAction("ping", m.roAction(m.pingAction))
 
 	return m.cserver.RegisterAgent(ctx, md.Name, agent)
 }
@@ -109,6 +115,12 @@ func (m *Management) fullAction(a mcorpc.Action) mcorpc.Action {
 		defer m.mu.Unlock()
 
 		a(ctx, req, reply, agent, conn)
+	}
+}
+
+func (m *Management) pingAction(ctx context.Context, req *mcorpc.Request, reply *mcorpc.Reply, agent *mcorpc.Agent, conn choria.ConnectorInfo) {
+	reply.Data = &pingReply{
+		Version: agent.Metadata().Version,
 	}
 }
 

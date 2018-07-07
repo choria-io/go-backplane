@@ -9,6 +9,16 @@ metadata    :name        => "{{.Name}}",
             :url         => "https://choria.io/",
             :timeout     => 10
 
+action "ping", :description => "Backplane communications test" do
+    output :version,
+            :description => "The version of the backplane system in use",
+            :display_as => "Choria Backplane"
+
+    summarize do
+        aggregate summary(:version)
+    end   
+end
+            
 {{if .Health}}
 action "health", :description => "Checks the health of the managed service" do
     output :result,
