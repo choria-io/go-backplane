@@ -8,8 +8,10 @@ import (
 )
 
 var (
-	pausable bool
-	name     string
+	pausable   bool
+	healthable bool
+	stopable   bool
+	name       string
 )
 
 func main() {
@@ -19,7 +21,9 @@ func main() {
 
 	g := app.Command("generate", "Generates DDL files for the backplane generated agents")
 	g.Flag("name", "Agent name to generate").Required().StringVar(&name)
-	g.Flag("pausable", "Generate actions for the Pausable interface").Default("true").BoolVar(&pausable)
+	g.Flag("pause", "Generate actions for the Pausable interface").BoolVar(&pausable)
+	g.Flag("stop", "Generate actions for the Stopable interface").BoolVar(&stopable)
+	g.Flag("health", "Generate actions for the HealthCheckable interface").BoolVar(&healthable)
 
 	cmd := kingpin.MustParse(app.Parse(os.Args[1:]))
 

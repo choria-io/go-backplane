@@ -4,7 +4,7 @@ This is a embedable Choria Server that you can use to provide a backplane for yo
 
 You can use it to provide a secure, scalable and flexibile managment interface right inside your application with no dependencies other than a Choria broker infrastructure.
 
-At present it is focussed on creating a circuit breaker that allow you to pause/resume/query the circuit breaker status of a large fleet of (micro)services.
+At present it is focussed on creating a circuit breakers, health checks and shutdown ations that allow you to affect the status of a large fleet of (micro)services.
 
 Using the Choria discovery abilities you can target subsets of services for circuit breaking.  In time other management capabilities will be added via other interfaces.
 
@@ -22,6 +22,10 @@ $ mco rpc myapp resume -W dc=DC1
 
 ```
 $ mco rpc myapp info -W dc=DC1
+```
+
+```
+$ mco rpc myapp health -W dc=DC1
 ```
 
 Your system can also expose it's configuration and other items as facts that can be used for fine tuned targeting of actions
@@ -46,13 +50,45 @@ Instead one would set up a central management Choria infrastructure where these 
 
   * Ability to add your own actions to the agent
   * Ability to pass in entire agents into the running instance
-  * Health check endpoint
   * Thread dump endpoint
-  * Shutdown endpoint
 
 ## Embeding
 
 To embed this backplane in your own Go code you need to implement a few interfaces.
+
+### Health Checks
+
+To allow your application to be health checked you need to implement the `HealthCheckAble` interface, a simple version is here:
+
+```go
+import (
+    backplane "github.com/choria-io/go-backplane"
+)
+
+type App struct {
+    config *Config
+    paused bool
+    configured bool // setting this is not shown
+}
+
+type health struct {
+    Configured bool
+}
+
+func (a *App) 	HealthCheck() (result interface{}, ok bool) {
+    r := &health{
+        Configured: a.configured,
+    }
+
+    return r, r != nil
+}
+```
+
+The example is obviously super simple, you can do any internal health checks you desired, I suggest keeping it fast and not testing remote APIs if you run many managed services.
+
+Your result should be a structure - or something that satisfies the json interfaces.
+
+Once enabled (see below under embedding) this will be accessible via the `health` action.
 
 ### Circuit Breaker
 
@@ -71,15 +107,6 @@ type Pausable interface {
 A simple version of this can be seen here:
 
 ```go
-import (
-    backplane "github.com/choria-io/go-backplane"
-)
-
-type App struct {
-    config *Config
-    paused bool
-}
-
 func (a *App) Pause() {
     a.paused = true
 }
@@ -117,6 +144,24 @@ func (a *App) Work(ctx context.Context) {
 ```
 
 Here the `Work()` method will do some work every 500 milliseconds unless the system is paused.
+
+Once enabled (see below under embedding) this will be accessible via the `info`, `pause`, `resume` and `flip` actions.
+
+### Shutdown
+
+You can allow remote shutdowns of your application, to achieve this implement the `Stopable` interface:
+
+```go
+func (a *App) Shutdown() {
+    os.Exit(0)
+}
+```
+
+When you invoke the `stop` action via the Choria API it will schedule a shutdown after a random sleep duration rather than call it immediately.
+
+You can combine this with a `Pausable` to drain connections first, but we don't support doing that automatically at present.
+
+Once enabled (see below under embedding) this will be accessible via the `stop` action.
 
 ### Configure Choria
 
@@ -206,7 +251,14 @@ Above we built a simple pausable application that does some work unless paused, 
 ```go
 func (a *App) startBackPlane(ctx context.Context, wg *sync.Waitgroup) error {
     if a.config.Management != nil {
-        _, err := backplane.Run(ctx, wg, "app", a.config.Management, backplane.ManageFactSource(a.config), backplane.ManagePausable(a))
+        opts := []backplane.Option{
+            backplane.ManageFactSource(a.config),
+            backplane.ManagePausable(a),
+            backplane.ManageHealthCheck(a),
+            backplane.ManageStopable(a),
+        }
+
+        _, err := backplane.Run(ctx, wg, "app", a.config.Management, opts...)
 		if err != nil {
 			return err
 		}
@@ -216,7 +268,9 @@ func (a *App) startBackPlane(ctx context.Context, wg *sync.Waitgroup) error {
 }
 ```
 
-Once you call `startBackPlane()` in your startup cycle it will start a Choria instance with the `discovery`, `choria_util` and `app` agents, the app agent will have `info`, `pause`, `resume` and `flip` actions, your config will be shown in the `info` action and you can discovery it using any of the facts.
+Once you call `startBackPlane()` in your startup cycle it will start a Choria instance with the `discovery`, `choria_util` and `app` agents, the app agent will have `info`, `pause`, `resume`, `flip`, `stop` and `health` actions, your config will be shown in the `info` action and you can discovery it using any of the facts.
+
+If you only supply some of `ManageFactSource`, `ManagePausable`, `ManageHealthCheck` and `ManageStopable` the features of the agent will be selectively disabled.
 
 ### Configuring Choria CLI and API clients
 
@@ -226,7 +280,7 @@ A tool to create these are included and you should distribute these files to you
 
 ```
 $ go get github.com/choria-io/go-backplane/cmd/backplane
-$ backplane generate --name yourapp
+$ backplane generate --name yourapp --cron --health --stop
 ```
 
 You'll now have `yourapp.json` and `yourapp.ddl` in the current directory, distribute those files to your library dirs as with any other Choria agent.
