@@ -4,9 +4,9 @@ This is a embedable Choria Server that you can use to provide a backplane for yo
 
 You can use it to provide a secure, scalable and flexibile managment interface right inside your application with no dependencies other than a Choria broker infrastructure.
 
-At present it is focussed on creating a circuit breakers, health checks and shutdown ations that allow you to affect the status of a large fleet of (micro)services.
+At present it is focussed on creating circuit breakers, health checks and shutdown ations that allow you to affect change of a large fleet of (micro)services rapidly and securely via CLI, Ruby API, Go API or Playbooks.
 
-Using the Choria discovery abilities you can target subsets of services for circuit breaking.  In time other management capabilities will be added via other interfaces.
+Using the Choria discovery abilities you can target subsets of services across your entire fleet using metadata of your choice.
 
 Once embedded you can manage your fleet with commands like this:
 
@@ -24,21 +24,23 @@ $ mco rpc myapp resume -W dc=DC1
 $ mco rpc myapp health -W dc=DC1
 ```
 
-Your system can also expose it's configuration and other items as facts that can be used for fine tuned targeting of actions
-
 [![GoDoc](https://godoc.org/github.com/choria-io/go-backplane?status.svg)](https://godoc.org/github.com/choria-io/go-backplane)
 
 ## Motivation
 
 It's typical for applications to expose REST interfaces that let one do things like circuit breaking on their internals.  This works perfectly fine in the general case of a small setup with one or two locations.
 
-At scale though where one have 30+ DCs with machines behind various layers of bastion node and so forth this model rapidly breaks down as you'll have machine generated hostnames and ports.  It becomes impossible to know what services are where and just gaining access to a HTTP port in all your data centers is a problem.
+At scale though where one have 30+ DCs with machines behind various layers of bastion nodes and so forth this model rapidly breaks down as you'll have machine generated hostnames and ports and many services.  It becomes impossible to know what services are where and just gaining access to a HTTP port in all your data centers is a problem.
 
 Instead one would set up a central management Choria infrastructure where these managed microservices will connect to.  The services connect out to the management network which is much easier to manage from a security perspective. Using the Choria discovery features you can target all or subsets of Microservices across your entire multi DC fleet in a fast way from either the CLI, Ruby API, Golang APIs or Choria Playbooks.
+
+While a similar outcome can be achieved with a side car model - simply write a Ruby based agent for your app and deploy it into the running Choria Server on that node - this model is convenient for isolation and for true microservices in containers etc.
 
 ## Features
 
   * Circuit breaker interface
+  * Health Check interface
+  * Shutdown interface
   * Standardised configuration
   * TLS using PuppetCA or manual configuration
   * Expose Facts to the Choria discovery system
@@ -73,7 +75,7 @@ type health struct {
     Configured bool
 }
 
-func (a *App) 	HealthCheck() (result interface{}, ok bool) {
+func (a *App) HealthCheck() (result interface{}, ok bool) {
     r := &health{
         Configured: a.configured,
     }
@@ -82,7 +84,7 @@ func (a *App) 	HealthCheck() (result interface{}, ok bool) {
 }
 ```
 
-The example is obviously over simple and achieves very little, you can do any internal health checks you desired, I suggest keeping it fast and not testing remote APIs if you run many managed services.
+The example is obviously over simplified and achieves very little - you can do any internal health checks you desired, I suggest keeping it fast and not testing remote APIs if you run many managed services.
 
 Your result should be a structure - or something that satisfies the json interfaces.
 
@@ -102,7 +104,7 @@ type Pausable interface {
 }
 ```
 
-A simple version of this can be seen here:
+A simple version that builds on the example above can be seen here:
 
 ```go
 func (a *App) Pause() {
@@ -157,9 +159,21 @@ func (a *App) Shutdown() {
 
 When you invoke the `stop` action via the Choria API it will schedule a shutdown after a random sleep duration rather than call it immediately.
 
-You can combine this with a `Pausable` to drain connections first, but we don't support doing that automatically at present.
+You can combine this with a `Pausable` to drain connections first, but we don't support doing that automatically at present but might in the future.
 
 Once enabled (see below under embedding) this will be accessible via the `stop` action.
+
+### Fact Source
+
+The `FactSource` interface is required to expose some internals of your application to Choria, you should mark the structure fields up with `json` tags as this will be serialized to JSON.
+
+Here we simply expose our running config as facts, you can return any structure here and that'll become facts.
+
+```go
+func (a *App) FactData() interface{} {
+    return a.config
+}
+```
 
 ### Configure Choria
 
@@ -206,9 +220,9 @@ management:
 
 #### Authorization
 
-Authorization is supported by a simple allow all, allow readonly or insecure flags. The configuration above allows the user `sre.choria` to pause, resume and flip the service while the `1stline.choria` user can get info. The strings supplied are treated as Regular Expressions.
+Authorization is supported by a simple allow all, allow readonly or insecure flags. The configuration above allows the user `sre.choria` to pause, resume, flip and shutdown plus all the read only actions while the `1stline.choria` user can get info and health checks. The strings supplied are treated as Regular Expressions.
 
-Authorization can be disabled with the following:
+Authorization can be disabled with the following, any user will be able to do anything now:
 
 ```yaml
 auth:
@@ -222,29 +236,17 @@ As you can see TLS is supported in the configuration, it's optional but recommen
 If you use Puppet you can simplify the TLS like this:
 
 ```yaml
-    tls:
-        scheme: puppet
+tls:
+    scheme: puppet
 ```
 
 It will then use the nodes certificates etc if you run it as root, if not root use the [pki-enroll](https://github.com/choria-io/go-security) command to enroll the system into the PuppetCA
 
 If you have your own CA or already enrolled you can configure it manually as above.  The `cache` is simply a directory on the node where Choria will write some cached public certificates.
 
-### Fact Source
-
-The `FactSource` interface is required to expose some internals of your application to Choria, you should mark the structure fields up with `json` tags as this will be serialized to JSON.
-
-Here we simply expose our running config as facts, you can return any structure here and that'll become facts.
-
-```go
-func (a *App) FactData() interface{} {
-    return a.config
-}
-```
-
 ### Starting the server
 
-Above we built a simple pausable application that does some work unless paused, it exposes it's configuration as facts, now we can just embed our server and start it:
+Above we built a simple pausable, shutdownable and health checkable application that does some work unless paused, it exposes it's configuration as facts, now we can just embed our server and start it:
 
 ```go
 func (a *App) startBackPlane(ctx context.Context, wg *sync.Waitgroup) error {

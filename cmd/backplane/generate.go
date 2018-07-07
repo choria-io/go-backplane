@@ -88,8 +88,24 @@ func generateJSON() error {
 		Schema:  "https://choria.io/schemas/mcorpc/ddl/v1/agent.json",
 	}
 
+	act := &agent.Action{
+		Name:        "ping",
+		Description: "Backplane communications test",
+		Display:     "failed",
+		Input:       json.RawMessage("{}"),
+		Output:      make(map[string]*agent.ActionOutputItem),
+	}
+
+	act.Output["version"] = &agent.ActionOutputItem{
+		Default:     "0.0.0",
+		Description: "The version of the Choria Backplane system in use",
+		DisplayAs:   "Choria Backplane",
+	}
+
+	ddl.Actions = append(ddl.Actions, act)
+
 	if stopable {
-		act := &agent.Action{
+		act = &agent.Action{
 			Name:        "stop",
 			Description: "Stops the managed service",
 			Display:     "failed",
@@ -107,7 +123,7 @@ func generateJSON() error {
 	}
 
 	if healthable {
-		act := &agent.Action{
+		act = &agent.Action{
 			Name:        "health",
 			Description: "Checks the health of the managed service",
 			Display:     "failed",
@@ -132,7 +148,7 @@ func generateJSON() error {
 
 	if pausable {
 		for _, action := range []string{"info", "pause", "resume", "flip"} {
-			act := &agent.Action{
+			act = &agent.Action{
 				Name:        action,
 				Description: action,
 				Display:     "always",
