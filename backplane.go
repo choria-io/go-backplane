@@ -1,3 +1,17 @@
+// Package backplane allows you to create a Choria based management backplane for your application
+//
+// Your application will live on the Choria network where it can be discovered and managed remotely
+// on a very large scale with built in authentication, auditing and authorization.
+//
+// You will be able to interact with your application from the Choria CLI, Ruby API or Go API and
+// perform some or all of the below
+//
+//    * Circuit Breaker that can pause and resume your application
+//    * Healthchecks to query the internal health of your application
+//    * Stop the application
+//
+// Additionally data about your application like it's configuration will be exposed to the Choria
+// discovery subsystem
 package backplane
 
 import (
