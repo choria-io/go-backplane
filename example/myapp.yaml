@@ -1,0 +1,21 @@
+# your own config here
+interval: 600
+
+# Standard Backplane specific configuration here
+management:
+    collective: app
+    logfile: backplane.log
+    loglevel: info
+    tls:
+        scheme: puppet
+
+    auth:
+        full:
+            - sre.mcollective
+
+        read_only:
+            - 1stline.mcollective
+
+    brokers:
+        - choria1.example.net:4222
+        - choria2.example.net:4222
