@@ -6,9 +6,9 @@
 // You will be able to interact with your application from the Choria CLI, Ruby API or Go API and
 // perform some or all of the below
 //
-//    * Circuit Breaker that can pause and resume your application
-//    * Healthchecks to query the internal health of your application
-//    * Stop the application
+//  * Circuit Breaker that can pause and resume your application
+//  * Healthchecks to query the internal health of your application
+//  * Stop the application
 //
 // Additionally data about your application like it's configuration will be exposed to the Choria
 // discovery subsystem

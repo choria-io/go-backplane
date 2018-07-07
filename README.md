@@ -26,6 +26,8 @@ $ mco rpc myapp health -W dc=DC1
 
 Your system can also expose it's configuration and other items as facts that can be used for fine tuned targeting of actions
 
+[![GoDoc](https://godoc.org/github.com/choria-io/go-backplane?status.svg)](https://godoc.org/github.com/choria-io/go-backplane)
+
 ## Motivation
 
 It's typical for applications to expose REST interfaces that let one do things like circuit breaking on their internals.  This works perfectly fine in the general case of a small setup with one or two locations.
