@@ -30,20 +30,20 @@ action "info", :description => "Information about the managed service" do
            :description => "Health Status",
            :display_as => "Healthy"
 
-    output :health_feature,
-           :description => "If the HealthCheckable interface is used"
+    output :healthcheck_feature,
+           :description => "If the HealthCheckable interface is used",
            :display_as => "Health Feature"
 
     output :pause_feature,
-           :description => "If the Pausableable interface is used"
+           :description => "If the Pausableable interface is used",
            :display_as => "Circuit Breaker Feature"
 
     output :shutdown_feature,
-           :description => "If the Stopable interface is used"
+           :description => "If the Stopable interface is used",
            :display_as => "Shutdown Feature"
 
     output :facts_feature,
-           :description => "If the InfoSource interface is used"
+           :description => "If the InfoSource interface is used",
            :display_as => "Facts Feature"
 
     summarize do
@@ -90,7 +90,7 @@ end
 
 
 ["pause", "resume", "flip"].each do |act|
-    action act, :description => "#{act.capitalize} the Circuit Breaker do
+    action act, :description => "#{act.capitalize} the Circuit Breaker" do
         display :always
 
         output :paused,
