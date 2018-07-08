@@ -10,9 +10,10 @@ import (
 	"time"
 )
 
-// FactSource supplies fact data
-type FactSource interface {
+// InfoSource supplies fact data
+type InfoSource interface {
 	FactData() interface{}
+	Version() string
 }
 
 func (m *Management) exposeFacts(ctx context.Context, wg *sync.WaitGroup) (f string, err error) {
@@ -23,12 +24,12 @@ func (m *Management) exposeFacts(ctx context.Context, wg *sync.WaitGroup) (f str
 	tf.Close()
 
 	wg.Add(1)
-	go m.fsWriter(ctx, wg, m.cfg.factsource, tf.Name())
+	go m.fsWriter(ctx, wg, m.cfg.infosource, tf.Name())
 
 	return tf.Name(), nil
 }
 
-func (m *Management) fsWriter(ctx context.Context, wg *sync.WaitGroup, fs FactSource, target string) {
+func (m *Management) fsWriter(ctx context.Context, wg *sync.WaitGroup, fs InfoSource, target string) {
 	defer wg.Done()
 	defer os.Remove(target)
 
@@ -55,7 +56,7 @@ func (m *Management) fsWriter(ctx context.Context, wg *sync.WaitGroup, fs FactSo
 	}
 }
 
-func (m *Management) write(fs FactSource, target string) error {
+func (m *Management) write(fs InfoSource, target string) error {
 	m.factsMu.Lock()
 	defer m.factsMu.Unlock()
 

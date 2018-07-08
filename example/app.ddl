@@ -7,6 +7,52 @@ metadata    :name        => "app",
             :url         => "https://choria.io/",
             :timeout     => 10
 
+action "info", :description => "Information about the managed service" do
+    display :always
+
+    output :backplane_version,
+           :description => "Version of the Choria Backplane",
+           :display_as => "Choria Backplane"
+
+    output :version,
+           :description => "Service Version",
+           :display_as => "Version"
+
+    output :paused,
+           :description => "Circuit Breaker pause state",
+           :display_as => "Paused"
+
+    output :facts,
+           :description => "Instance Facts",
+           :display_as => "Facts"
+
+    output :healthy,
+           :description => "Health Status",
+           :display_as => "Healthy"
+
+    output :health_feature,
+           :description => "If the HealthCheckable interface is used"
+           :display_as => "Health Feature"
+
+    output :pause_feature,
+           :description => "If the Pausableable interface is used"
+           :display_as => "Circuit Breaker Feature"
+
+    output :shutdown_feature,
+           :description => "If the Stopable interface is used"
+           :display_as => "Shutdown Feature"
+
+    output :facts_feature,
+           :description => "If the InfoSource interface is used"
+           :display_as => "Facts Feature"
+
+    summarize do
+        aggregate summary(:version)
+        aggregate summary(:paused)
+        aggregate summary(:healthy)
+    end
+end
+    
 action "ping", :description => "Backplane communications test" do
     output :version,
             :description => "The version of the Choria Backplane system in use",
@@ -35,7 +81,7 @@ end
 
 
 
-action "stop", :description => "Stops the managed service" do
+action "shutdown", :description => "Terminates the managed service" do
     output :delay,
             :description => "How long after running the action the shutdown will be initiated",
             :display_as => "Delay"
@@ -43,26 +89,15 @@ end
 
 
 
-["info", "pause", "resume", "flip"].each do |act|
-    action act, :description => act do
+["pause", "resume", "flip"].each do |act|
+    action act, :description => "#{act.capitalize} the Circuit Breaker do
         display :always
 
         output :paused,
                :description => "Circuit Breaker pause state",
                :display_as => "Paused"
 
-        if act == "info"
-            output :version,
-                   :description => "Service Version",
-                   :display_as => "Version"
-
-            output :facts,
-                   :description => "Instance Facts",
-                   :display_as => "Facts"
-        end
-
         summarize do
-            aggregate summary(:version) if act == "info"
             aggregate summary(:paused)
         end
     end

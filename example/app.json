@@ -24,7 +24,60 @@
          "description": "Backplane communications test"
       },
       {
-         "action": "stop",
+         "action": "info",
+         "input": {},
+         "output": {
+            "backplane_version": {
+               "description": "Version of the Choria Backplane",
+               "display_as": "Choria Backplane",
+               "default": null
+            },
+            "facts": {
+               "description": "Application Facts",
+               "display_as": "Facts",
+               "default": {}
+            },
+            "facts_feature": {
+               "description": "If the InfoSource interface is used",
+               "display_as": "Facts Feature",
+               "default": null
+            },
+            "health_feature": {
+               "description": "If the HealthCheckable interface is used",
+               "display_as": "Health Feature",
+               "default": null
+            },
+            "healthy": {
+               "description": "Health Status",
+               "display_as": "Healthy",
+               "default": null
+            },
+            "pause_feature": {
+               "description": "If the Pausableable interface is used",
+               "display_as": "Circuit Breaker Feature",
+               "default": null
+            },
+            "paused": {
+               "description": "Paused State",
+               "display_as": "Paused",
+               "default": null
+            },
+            "shutdown_feature": {
+               "description": "If the Stopable interface is used",
+               "display_as": "Shutdown Feature",
+               "default": null
+            },
+            "version": {
+               "description": "Application Version",
+               "display_as": "Version",
+               "default": null
+            }
+         },
+         "display": "always",
+         "description": "Information about the managed service"
+      },
+      {
+         "action": "shutdown",
          "input": {},
          "output": {
             "delay": {
@@ -34,7 +87,7 @@
             }
          },
          "display": "failed",
-         "description": "Stops the managed service"
+         "description": "Terminates the managed service"
       },
       {
          "action": "health",
@@ -53,29 +106,6 @@
          },
          "display": "failed",
          "description": "Checks the health of the managed service"
-      },
-      {
-         "action": "info",
-         "input": {},
-         "output": {
-            "facts": {
-               "description": "Application Facts",
-               "display_as": "Facts",
-               "default": {}
-            },
-            "paused": {
-               "description": "Paused State",
-               "display_as": "Paused",
-               "default": false
-            },
-            "version": {
-               "description": "Application Version",
-               "display_as": "Version",
-               "default": ""
-            }
-         },
-         "display": "always",
-         "description": "info"
       },
       {
          "action": "pause",

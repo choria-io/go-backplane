@@ -11,13 +11,12 @@ import (
 	"github.com/choria-io/go-choria/server/agents"
 )
 
-// Pausable is a processor that can be paused
+// Pausable is a service that can be paused
 type Pausable interface {
 	Pause()
 	Resume()
 	Flip()
 	Paused() bool
-	Version() string
 }
 
 // HealthCheckable describes a application that can be checked using the backplane
@@ -40,9 +39,15 @@ type stopReply struct {
 }
 
 type infoReply struct {
-	Version string      `json:"version"`
-	Paused  bool        `json:"paused"`
-	Facts   interface{} `json:"facts"`
+	BackplaneVersion string      `json:"backplane_version"`
+	Version          string      `json:"version"`
+	Paused           bool        `json:"paused"`
+	Facts            interface{} `json:"facts"`
+	Healthy          bool        `json:"healthy"`
+	HealthFeature    bool        `json:"healthcheck_feature"`
+	PauseFeature     bool        `json:"pause_feature"`
+	ShutdownFeature  bool        `json:"shutdown_feature"`
+	FactsFeature     bool        `json:"facts_feature"`
 }
 
 type simpleReply struct {
@@ -67,20 +72,20 @@ func (m *Management) startAgents(ctx context.Context) (err error) {
 	agent := mcorpc.New(md.Name, md, m.cfg.fw, m.log.WithField("agent", md.Name))
 
 	if m.cfg.pausable != nil {
-		agent.MustRegisterAction("info", m.roAction(m.infoAction))
 		agent.MustRegisterAction("pause", m.fullAction(m.pauseAction))
 		agent.MustRegisterAction("resume", m.fullAction(m.resumeAction))
 		agent.MustRegisterAction("flip", m.fullAction(m.flipAction))
 	}
 
 	if m.cfg.stopable != nil {
-		agent.MustRegisterAction("stop", m.fullAction(m.stopAction))
+		agent.MustRegisterAction("shutdown", m.fullAction(m.shutdownAction))
 	}
 
 	if m.cfg.healthcheckable != nil {
 		agent.MustRegisterAction("health", m.roAction(m.healthAction))
 	}
 
+	agent.MustRegisterAction("info", m.roAction(m.infoAction))
 	agent.MustRegisterAction("ping", m.roAction(m.pingAction))
 
 	return m.cserver.RegisterAgent(ctx, md.Name, agent)
@@ -142,12 +147,12 @@ func (m *Management) healthAction(ctx context.Context, req *mcorpc.Request, repl
 	}
 }
 
-func (m *Management) stopAction(ctx context.Context, req *mcorpc.Request, reply *mcorpc.Reply, agent *mcorpc.Agent, conn choria.ConnectorInfo) {
+func (m *Management) shutdownAction(ctx context.Context, req *mcorpc.Request, reply *mcorpc.Reply, agent *mcorpc.Agent, conn choria.ConnectorInfo) {
 	delay := time.Duration(rand.Intn(int(m.cfg.maxStopDelay))) + time.Second
 
 	r := func(d time.Duration) {
 		time.Sleep(d)
-		agent.Log.Warnf("Shutting down after stop action invoked by the backplane")
+		agent.Log.Warnf("Shutting down after shutdown action invoked by the backplane")
 		m.cfg.stopable.Shutdown()
 	}
 
@@ -179,19 +184,36 @@ func (m *Management) flipAction(ctx context.Context, req *mcorpc.Request, reply 
 }
 
 func (m *Management) infoAction(ctx context.Context, req *mcorpc.Request, reply *mcorpc.Reply, agent *mcorpc.Agent, conn choria.ConnectorInfo) {
-	m.info(reply)
+	info := &infoReply{
+		BackplaneVersion: agent.Metadata().Version,
+		Version:          "unknown",
+	}
+
+	if m.cfg.infosource != nil {
+		info.Version = m.cfg.infosource.Version()
+		info.Facts = m.cfg.infosource.FactData()
+		info.FactsFeature = true
+	}
+
+	if m.cfg.healthcheckable != nil {
+		_, info.Healthy = m.cfg.healthcheckable.HealthCheck()
+		info.HealthFeature = true
+	}
+
+	if m.cfg.pausable != nil {
+		info.Paused = m.cfg.pausable.Paused()
+		info.PauseFeature = true
+	}
+
+	if m.cfg.stopable != nil {
+		info.ShutdownFeature = true
+	}
+
+	reply.Data = info
 }
 
 func (m *Management) sinfo(r *mcorpc.Reply) {
 	r.Data = &simpleReply{
 		Paused: m.cfg.pausable.Paused(),
-	}
-}
-
-func (m *Management) info(r *mcorpc.Reply) {
-	r.Data = &infoReply{
-		Paused:  m.cfg.pausable.Paused(),
-		Version: m.cfg.pausable.Version(),
-		Facts:   m.cfg.factsource.FactData(),
 	}
 }

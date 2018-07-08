@@ -25,7 +25,7 @@ type Config struct {
 	maxStopDelay time.Duration
 
 	pausable        Pausable
-	factsource      FactSource
+	infosource      InfoSource
 	healthcheckable HealthCheckable
 	stopable        Stopable
 }
@@ -154,11 +154,11 @@ func ManageStopable(s Stopable) Option {
 	}
 }
 
-// ManageFactSource configures a fact source for discovery data
-// without supplying a factsource only basic discoverable data will be provided
-func ManageFactSource(f FactSource) Option {
+// ManageInfoSource configures a fact source for discovery data
+// without supplying a info source only basic discoverable data will be provided
+func ManageInfoSource(f InfoSource) Option {
 	return func(c *Config) {
-		c.factsource = f
+		c.infosource = f
 	}
 }
 
