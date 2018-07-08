@@ -104,10 +104,66 @@ func generateJSON() error {
 
 	ddl.Actions = append(ddl.Actions, act)
 
+	act = &agent.Action{
+		Name:        "info",
+		Description: "Information about the managed service",
+		Display:     "always",
+		Input:       json.RawMessage("{}"),
+		Output:      make(map[string]*agent.ActionOutputItem),
+	}
+
+	act.Output["backplane_version"] = &agent.ActionOutputItem{
+		Description: "Version of the Choria Backplane",
+		DisplayAs:   "Choria Backplane",
+	}
+
+	act.Output["version"] = &agent.ActionOutputItem{
+		Description: "Application Version",
+		DisplayAs:   "Version",
+	}
+
+	act.Output["paused"] = &agent.ActionOutputItem{
+		Description: "Paused State",
+		DisplayAs:   "Paused",
+	}
+
+	act.Output["facts"] = &agent.ActionOutputItem{
+		Default:     json.RawMessage("{}"),
+		Description: "Application Facts",
+		DisplayAs:   "Facts",
+	}
+
+	act.Output["healthy"] = &agent.ActionOutputItem{
+		Description: "Health Status",
+		DisplayAs:   "Healthy",
+	}
+
+	act.Output["health_feature"] = &agent.ActionOutputItem{
+		Description: "If the HealthCheckable interface is used",
+		DisplayAs:   "Health Feature",
+	}
+
+	act.Output["pause_feature"] = &agent.ActionOutputItem{
+		Description: "If the Pausableable interface is used",
+		DisplayAs:   "Circuit Breaker Feature",
+	}
+
+	act.Output["shutdown_feature"] = &agent.ActionOutputItem{
+		Description: "If the Stopable interface is used",
+		DisplayAs:   "Shutdown Feature",
+	}
+
+	act.Output["facts_feature"] = &agent.ActionOutputItem{
+		Description: "If the InfoSource interface is used",
+		DisplayAs:   "Facts Feature",
+	}
+
+	ddl.Actions = append(ddl.Actions, act)
+
 	if stopable {
 		act = &agent.Action{
-			Name:        "stop",
-			Description: "Stops the managed service",
+			Name:        "shutdown",
+			Description: "Terminates the managed service",
 			Display:     "failed",
 			Input:       json.RawMessage("{}"),
 			Output:      make(map[string]*agent.ActionOutputItem),
@@ -147,7 +203,7 @@ func generateJSON() error {
 	}
 
 	if pausable {
-		for _, action := range []string{"info", "pause", "resume", "flip"} {
+		for _, action := range []string{"pause", "resume", "flip"} {
 			act = &agent.Action{
 				Name:        action,
 				Description: action,
@@ -160,20 +216,6 @@ func generateJSON() error {
 				Default:     false,
 				Description: "Paused State",
 				DisplayAs:   "Paused",
-			}
-
-			if action == "info" {
-				act.Output["version"] = &agent.ActionOutputItem{
-					Default:     "",
-					Description: "Application Version",
-					DisplayAs:   "Version",
-				}
-
-				act.Output["facts"] = &agent.ActionOutputItem{
-					Default:     json.RawMessage("{}"),
-					Description: "Application Facts",
-					DisplayAs:   "Facts",
-				}
 			}
 
 			ddl.Actions = append(ddl.Actions, act)

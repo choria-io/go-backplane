@@ -32,50 +32,6 @@ type health struct {
 	Configured bool
 }
 
-// HealthCheck implements backplane.HealthCheckable
-func (a *App) HealthCheck() (result interface{}, ok bool) {
-	r := &health{
-		Configured: a.configured,
-	}
-
-	return r, a.configured
-}
-
-// FactData implements backplane.FactSource
-func (a *App) FactData() interface{} {
-	return a.config
-}
-
-// Shutdown implements bacplane.Stopable
-func (a *App) Shutdown() {
-	os.Exit(0)
-}
-
-// Pause implements backplane.Pausable
-func (a *App) Pause() {
-	a.paused = true
-}
-
-// Resume implements backplane.Pausable
-func (a *App) Resume() {
-	a.paused = false
-}
-
-// Flip implements backplane.Pausable
-func (a *App) Flip() {
-	a.paused = !a.paused
-}
-
-// Paused implements backplane.Pausable
-func (a *App) Paused() bool {
-	return a.paused
-}
-
-// Version implements backplane.Pausable
-func (a *App) Version() string {
-	return "0.0.1"
-}
-
 func (a *App) work(ctx context.Context, wg *sync.WaitGroup) {
 	defer wg.Done()
 
@@ -134,7 +90,7 @@ func main() {
 	}
 
 	opts := []backplane.Option{
-		backplane.ManageFactSource(app),
+		backplane.ManageInfoSource(app),
 		backplane.ManagePausable(app),
 		backplane.ManageHealthCheck(app),
 		backplane.ManageStopable(app),

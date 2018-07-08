@@ -52,6 +52,20 @@ While a similar outcome can be achieved with a side car model - simply write a R
   * Ability to pass in entire agents into the running instance
   * Thread dump endpoint
 
+## Exposed Actions
+
+The following actions are exposed to the Choria network:
+
+|Action    |Description|Interface|
+|----------|-----------|---------|
+|info      |Information such as pause state and facts|always present|
+|ping      |Test connectivity to the backplane|always present|
+|pause     |Pauses your application|Pausable|
+|resume    |Resumes your application|Pausable|
+|flip      |If paused, resume.  If not paused, pause.|Pausable|
+|shutdown  |Shuts down your service after short delay|Stopable|
+|health    |Checks the internal health of your service|HealthChecable|
+
 ## Embeding
 
 To embed this backplane in your own Go code you need to implement a few interfaces, not all are required you can selectively enable just what you need.
@@ -125,10 +139,6 @@ func (a *App) Paused() bool {
     return a.paused
 }
 
-func (a *App) Version() string {
-    return "0.0.1"
-}
-
 func (a *App) Work(ctx context.Context) {
     ticker := time.NewTicker(time.Duration(a.config.Interval) * time.Millisecond)
 
@@ -167,13 +177,17 @@ Once enabled (see below under embedding) this will be accessible via the `stop` 
 
 ### Fact Source
 
-The `FactSource` interface is required to expose some internals of your application to Choria, you should mark the structure fields up with `json` tags as this will be serialized to JSON.
+The `InfoSource` interface is required to expose some internals of your application to Choria, you should mark the structure fields up with `json` tags as this will be serialized to JSON.
 
 Here we simply expose our running config as facts, you can return any structure here and that'll become facts.
 
 ```go
 func (a *App) FactData() interface{} {
     return a.config
+}
+
+func (a *App) Version() string {
+    return "0.0.1"
 }
 ```
 
@@ -254,7 +268,7 @@ Above we built a simple pausable, shutdownable and health checkable application 
 func (a *App) startBackPlane(ctx context.Context, wg *sync.Waitgroup) error {
     if a.config.Management != nil {
         opts := []backplane.Option{
-            backplane.ManageFactSource(a.config),
+            backplane.ManageInfoSource(a.config),
             backplane.ManagePausable(a),
             backplane.ManageHealthCheck(a),
             backplane.ManageStopable(a),
@@ -272,7 +286,7 @@ func (a *App) startBackPlane(ctx context.Context, wg *sync.Waitgroup) error {
 
 Once you call `startBackPlane()` in your startup cycle it will start a Choria instance with the `discovery`, `choria_util` and `app` agents, the app agent will have `info`, `pause`, `resume`, `flip`, `stop` and `health` actions, your config will be shown in the `info` action and you can discovery it using any of the facts.
 
-If you only supply some of `ManageFactSource`, `ManagePausable`, `ManageHealthCheck` and `ManageStopable` the features of the agent will be selectively disabled.
+If you only supply some of `ManageInfoSource`, `ManagePausable`, `ManageHealthCheck` and `ManageStopable` the features of the agent will be selectively disabled.
 
 ### Configuring Choria CLI and API clients
 

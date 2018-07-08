@@ -50,7 +50,7 @@ func Run(ctx context.Context, wg *sync.WaitGroup, name string, conf ConfigProvid
 
 	m.log = m.cfg.fw.Logger("backplane")
 
-	if m.cfg.factsource != nil {
+	if m.cfg.infosource != nil {
 		m.exposeFacts(ctx, wg)
 	}
 
