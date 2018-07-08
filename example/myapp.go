@@ -28,10 +28,6 @@ type App struct {
 	configured bool // setting this is not shown
 }
 
-type health struct {
-	Configured bool
-}
-
 func (a *App) work(ctx context.Context, wg *sync.WaitGroup) {
 	defer wg.Done()
 

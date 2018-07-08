@@ -52,7 +52,7 @@ While a similar outcome can be achieved with a side car model - simply write a R
   * Ability to pass in entire agents into the running instance
   * Thread dump endpoint
 
-## Exposed Actions
+## Exposed Actions
 
 The following actions are exposed to the Choria network:
 
@@ -64,7 +64,7 @@ The following actions are exposed to the Choria network:
 |resume    |Resumes your application|Pausable|
 |flip      |If paused, resume.  If not paused, pause.|Pausable|
 |shutdown  |Shuts down your service after short delay|Stopable|
-|health    |Checks the internal health of your service|HealthChecable|
+|health    |Checks the internal health of your service|HealthCheckable|
 
 ## Embeding
 
@@ -104,23 +104,11 @@ The example is obviously over simplified and achieves very little - you can do a
 
 Your result should be a structure - or something that satisfies the json interfaces.
 
-Once enabled (see below under embedding) this will be accessible via the `health` action.
+Once enabled using the `backplane.ManageHealthCheck()` option (see below under embedding) this will be accessible via the `health` action.
 
 ### Circuit Breaker
 
-To allow your application to be paused and resumed you need to implement the `Pausable` interface:
-
-```go
-type Pausable interface {
-	Pause()
-	Resume()
-	Flip()
-	Paused() bool
-	Version() string
-}
-```
-
-A simple version that builds on the example above can be seen here:
+To allow your application to be paused and resumed you need to implement the `Pausable` interface, a simple version that builds on the example above can be seen here:
 
 ```go
 func (a *App) Pause() {
@@ -155,9 +143,9 @@ func (a *App) Work(ctx context.Context) {
 }
 ```
 
-Here the `Work()` method will do some work every 500 milliseconds unless the system is paused.
+Here the `Work()` method will do some work every configured interval unless the system is paused.
 
-Once enabled (see below under embedding) this will be accessible via the `info`, `pause`, `resume` and `flip` actions.
+Once enabled using the `backplane.ManagePausable()` option (see below under embedding) this will be accessible via the `info`, `pause`, `resume` and `flip` actions.
 
 ### Shutdown
 
@@ -169,13 +157,13 @@ func (a *App) Shutdown() {
 }
 ```
 
-When you invoke the `stop` action via the Choria API it will schedule a shutdown after a random sleep duration rather than call it immediately.
+When you invoke the `shutdown` action via the Choria API it will schedule a shutdown after a random sleep duration rather than call it immediately.
 
 You can combine this with a `Pausable` to drain connections first, but we don't support doing that automatically at present but might in the future.
 
-Once enabled (see below under embedding) this will be accessible via the `stop` action.
+Once enabled via the `backplane.ManageStopable()` option (see below under embedding) this will be accessible via the `shutdown` action.
 
-### Fact Source
+### Information Source
 
 The `InfoSource` interface is required to expose some internals of your application to Choria, you should mark the structure fields up with `json` tags as this will be serialized to JSON.
 
@@ -197,8 +185,8 @@ You have to supply some basic configuration to the Choria framework, you need to
 
 ```go
 type Config struct {
-    Interval int `yaml:"interval"`
-    Management *backplane.StandardConfiguration `yaml:"management"`
+	Interval   int                              `yaml:"interval"`
+	Management *backplane.StandardConfiguration `yaml:"management"`
 }
 ```
 
@@ -284,9 +272,9 @@ func (a *App) startBackPlane(ctx context.Context, wg *sync.Waitgroup) error {
 }
 ```
 
-Once you call `startBackPlane()` in your startup cycle it will start a Choria instance with the `discovery`, `choria_util` and `app` agents, the app agent will have `info`, `pause`, `resume`, `flip`, `stop` and `health` actions, your config will be shown in the `info` action and you can discovery it using any of the facts.
+Once you call `startBackPlane()` in your startup cycle it will start a Choria instance with the `discovery`, `choria_util` and `app` agents, the app agent will have all the actions listed in the earlier table, your config will be shown in the `info` action and you can discovery it using any of the facts.
 
-If you only supply some of `ManageInfoSource`, `ManagePausable`, `ManageHealthCheck` and `ManageStopable` the features of the agent will be selectively disabled.
+If you only supply some of `ManageInfoSource`, `ManagePausable`, `ManageHealthCheck` and `ManageStopable` the features of the agent will be selectively disabled as per the table earlier.
 
 ### Configuring Choria CLI and API clients
 
