@@ -12,7 +12,11 @@ import (
 
 // InfoSource supplies fact data
 type InfoSource interface {
+	// FactData should return any data you wish to expose to the fact system, it should
+	// be a JSON serializable struct and it's best if its a flat one with k=v pairs
 	FactData() interface{}
+
+	// Version is any version string of your application
 	Version() string
 }
 

@@ -92,7 +92,7 @@ func main() {
 		backplane.ManageStopable(app),
 	}
 
-	_, err = backplane.Run(ctx, wg, "app", app.config.Management, opts...)
+	_, err = backplane.Run(ctx, wg, app.config.Management, opts...)
 	if err != nil {
 		log.Fatalf("Could not start backplane: %s", err)
 	}

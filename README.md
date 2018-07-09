@@ -13,15 +13,15 @@ Once embedded you can manage your fleet with commands like this:
 Pause, resume and request info for all services in `DC1`
 
 ```
-$ mco rpc myapp pause -W dc=DC1
+$ mco rpc backplane pause -W dc=DC1
 ```
 
 ```
-$ mco rpc myapp resume -W dc=DC1
+$ mco rpc backplane resume -W dc=DC1
 ```
 
 ```
-$ mco rpc myapp health -W dc=DC1
+$ mco rpc backplane health -W dc=DC1
 ```
 
 [![GoDoc](https://godoc.org/github.com/choria-io/go-backplane?status.svg)](https://godoc.org/github.com/choria-io/go-backplane)
@@ -200,7 +200,7 @@ interval: 600
 
 # Standard Backplane specific configuration here
 management:
-    collective: app
+    name: app
     logfile: "/var/log/app/backplane.log"
     loglevel: warn
     tls:
@@ -262,7 +262,7 @@ func (a *App) startBackPlane(ctx context.Context, wg *sync.Waitgroup) error {
             backplane.ManageStopable(a),
         }
 
-        _, err := backplane.Run(ctx, wg, "app", a.config.Management, opts...)
+        _, err := backplane.Run(ctx, wg, a.config.Management, opts...)
         if err != nil {
             return err
         }
@@ -272,19 +272,8 @@ func (a *App) startBackPlane(ctx context.Context, wg *sync.Waitgroup) error {
 }
 ```
 
-Once you call `startBackPlane()` in your startup cycle it will start a Choria instance with the `discovery`, `choria_util` and `app` agents, the app agent will have all the actions listed in the earlier table, your config will be shown in the `info` action and you can discovery it using any of the facts.
+Once you call `startBackPlane()` in your startup cycle it will start a Choria instance with the `discovery`, `choria_util` and `backplane` agents, the `backplane` agent will have all the actions listed in the earlier table, your config will be shown in the `info` action and you can discovery it using any of the facts.
 
 If you only supply some of `ManageInfoSource`, `ManagePausable`, `ManageHealthCheck` and `ManageStopable` the features of the agent will be selectively disabled as per the table earlier.
 
-### Configuring Choria CLI and API clients
-
-To interact with the service from the CLI, Ruby Client API or Choria Go Client API you need a description of the service.
-
-A tool to create these are included and you should distribute these files to your client in the Choria lib directories - typically `/opt/puppetlabs/mcollective/plugins/mcollective/agent`.
-
-```
-$ go get github.com/choria-io/go-backplane/cmd/backplane
-$ backplane generate --name yourapp --cron --health --stop
-```
-
-You'll now have `yourapp.json` and `yourapp.ddl` in the current directory, distribute those files to your library dirs as with any other Choria agent.
+All backplane managed services will use the `backplane` agent name, to differentiate the `name` will be used to construct a sub collective name so each app is effectively contained. The upcoming CLI will be built around this design.

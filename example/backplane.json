@@ -4,8 +4,8 @@
       "license": "Apache-2.0",
       "author": "R.I.Pienaar \u003crip@devco.net\u003e",
       "timeout": 10,
-      "name": "app",
-      "version": "0.0.1",
+      "name": "backplane",
+      "version": "0.0.2",
       "url": "https://choria.io",
       "description": "Choria Management Backplane"
    },

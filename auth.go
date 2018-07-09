@@ -4,9 +4,14 @@ import "regexp"
 
 // Authorization lists certificate names that may access the backplane
 type Authorization struct {
-	Insecure bool     `json:"insecure" yaml:"insecure"`
-	Full     []string `json:"full" yaml:"full"`
-	RO       []string `json:"read_only" yaml:"read_only"`
+	// Insecure disables security and allow all callers to do anything
+	Insecure bool `json:"insecure" yaml:"insecure"`
+
+	// Full is a regex list of certnames that can perform changes like pause and resume
+	Full []string `json:"full" yaml:"full"`
+
+	// RO is a regex list of certnames that can request information from the service
+	RO []string `json:"read_only" yaml:"read_only"`
 }
 
 // ROAllowed determines if this user can access read only action
