@@ -6,11 +6,11 @@
 // You will be able to interact with your application from the Choria CLI, Ruby API or Go API and
 // perform some or all of the below
 //
-//  * Circuit Breaker that can pause and resume your application
-//  * Healthchecks to query the internal health of your application
-//  * Stop the application
+// * Circuit Breaker that can pause and resume your application
+// * Healthchecks to query the internal health of your application
+// * Shutdown the application
 //
-// Additionally data about your application like it's configuration will be exposed to the Choria
+// Additionally data about your application like it's configuration can be exposed to the Choria
 // discovery subsystem
 package backplane
 
@@ -38,12 +38,12 @@ type Management struct {
 }
 
 // Run creates a new instance of the backplane
-func Run(ctx context.Context, wg *sync.WaitGroup, name string, conf ConfigProvider, opts ...Option) (m *Management, err error) {
+func Run(ctx context.Context, wg *sync.WaitGroup, conf ConfigProvider, opts ...Option) (m *Management, err error) {
 	m = &Management{
 		mu: &sync.Mutex{},
 	}
 
-	m.cfg, err = newConfig(name, conf, opts...)
+	m.cfg, err = newConfig("backplane", conf, opts...)
 	if err != nil {
 		return nil, fmt.Errorf("could not initialize Choria backplane: %s", err)
 	}

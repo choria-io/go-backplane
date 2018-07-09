@@ -33,14 +33,14 @@ func generate() {
 }
 
 func generateDDL() error {
-	out := name + ".ddl"
+	out := "backplane.ddl"
 
 	if _, err := os.Stat(out); err == nil {
 		return fmt.Errorf("%s already exist", out)
 	}
 
 	d := ddl{
-		Name:    name,
+		Name:    "backplane",
 		Version: backplane.Version,
 		Pause:   pausable,
 		Health:  healthable,
@@ -68,7 +68,7 @@ func generateDDL() error {
 }
 
 func generateJSON() error {
-	out := name + ".json"
+	out := "backplane.json"
 
 	if _, err := os.Stat(out); err == nil {
 		return fmt.Errorf("%s already exist", out)
@@ -76,7 +76,7 @@ func generateJSON() error {
 
 	ddl := agent.DDL{
 		Metadata: &agents.Metadata{
-			Name:        name,
+			Name:        "backplane",
 			Description: "Choria Management Backplane",
 			Author:      "R.I.Pienaar <rip@devco.net>",
 			Version:     backplane.Version,

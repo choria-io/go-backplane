@@ -20,7 +20,6 @@ func main() {
 	app.Author("R.I.Pienaar <rip@devco.net>")
 
 	g := app.Command("generate", "Generates DDL files for the backplane generated agents")
-	g.Flag("name", "Agent name to generate").Required().StringVar(&name)
 	g.Flag("pause", "Generate actions for the Pausable interface").BoolVar(&pausable)
 	g.Flag("stop", "Generate actions for the Stopable interface").BoolVar(&stopable)
 	g.Flag("health", "Generate actions for the HealthCheckable interface").BoolVar(&healthable)

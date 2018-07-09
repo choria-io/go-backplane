@@ -2,6 +2,7 @@ package backplane
 
 import (
 	"fmt"
+	"regexp"
 	"time"
 
 	"github.com/choria-io/go-choria/choria"
@@ -12,7 +13,7 @@ import (
 type Config struct {
 	auth         Authorization
 	brokers      []string
-	collectives  []string
+	appname      string
 	logfile      string
 	loglevel     string
 	tls          *TLSConf
@@ -32,22 +33,47 @@ type Config struct {
 
 // TLSConf describes the TLS config for a NATS connection
 type TLSConf struct {
+	// Identity will be the certificate name to use when attempting to find certs and validate connections
 	Identity string `json:"identity" yaml:"identity"`
-	SSLDir   string `json:"ssl_dir" yaml:"ssl_dir"`
-	Scheme   string `json:"scheme" yaml:"scheme"`
-	CA       string `json:"ca" yaml:"ca"`
-	Cert     string `json:"cert" yaml:"cert"`
-	Key      string `json:"key" yaml:"key"`
-	Cache    string `json:"cache" yaml:"cache"`
+
+	// SSLDir is where the puppet scheme will look for the standard Puppet format directories
+	SSLDir string `json:"ssl_dir" yaml:"ssl_dir"`
+
+	// Scheme is either puppet or manual
+	Scheme string `json:"scheme" yaml:"scheme"`
+
+	// CA sets the path to the ca file in the manual scheme
+	CA string `json:"ca" yaml:"ca"`
+
+	// Cert sets the path to the certificate file in the manual scheme
+	Cert string `json:"cert" yaml:"cert"`
+
+	// Key sets the path to the key file in the manual scheme
+	Key string `json:"key" yaml:"key"`
+
+	// Cache sets the path to the directory the manual scheme will use to store certificates received over the wire
+	Cache string `json:"cache" yaml:"cache"`
 }
 
 // ConfigProvider provides management backplane configuration
 type ConfigProvider interface {
+	// MiddlewareHosts are hosts in host:port format to connect to
 	MiddlewareHosts() []string
-	Collectives() []string
+
+	// Name is a unique name for this backplane, similarly named backplanes are grouped together
+	// and isolated from others.  Valid names are ^[a-z0-9]+.
+	Name() string
+
+	// LogFile is the file to use for logging the backplane related logs, "" means stdout
 	LogFile() string
+
+	// LogLevel is the logging level, one of debug, info, warn, error
 	LogLevel() string
+
+	// TLS is a TLS configuration, nil meaning disable security
 	TLS() *TLSConf
+
+	// Auth configured allow/deny lists of who may access the service
 	Auth() Authorization
 }
 
@@ -63,8 +89,12 @@ func newConfig(name string, cfg ConfigProvider, opts ...Option) (c *Config, err 
 		opts:         opts,
 	}
 
+	if cfg.Name() == "" {
+		return nil, fmt.Errorf("please specify an application name")
+	}
+
 	c.brokers = cfg.MiddlewareHosts()
-	c.collectives = cfg.Collectives()
+	c.appname = fmt.Sprintf("%s_backplane", cfg.Name())
 	c.logfile = cfg.LogFile()
 	c.loglevel = cfg.LogLevel()
 	c.tls = cfg.TLS()
@@ -78,12 +108,13 @@ func newConfig(name string, cfg ConfigProvider, opts ...Option) (c *Config, err 
 		return nil, fmt.Errorf("please specify backplane brokers")
 	}
 
-	if len(c.collectives) == 0 {
-		return nil, fmt.Errorf("please specify a list of collectives")
-	}
-
 	if c.loglevel == "" {
 		c.loglevel = "warn"
+	}
+
+	ok, err := regexp.MatchString("^[a-z]+_backplane$", c.appname)
+	if !ok || err != nil {
+		return nil, fmt.Errorf("the application name must match ^[a-z0-9]+$")
 	}
 
 	c.ccfg, err = chconf.NewDefaultConfig()
@@ -91,8 +122,8 @@ func newConfig(name string, cfg ConfigProvider, opts ...Option) (c *Config, err 
 		return
 	}
 
-	c.ccfg.Collectives = c.collectives
-	c.ccfg.MainCollective = c.collectives[0]
+	c.ccfg.Collectives = []string{c.appname}
+	c.ccfg.MainCollective = c.appname
 	c.ccfg.LogFile = c.logfile
 	c.ccfg.LogLevel = c.loglevel
 	c.ccfg.Choria.UseSRVRecords = false

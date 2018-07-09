@@ -13,19 +13,28 @@ import (
 
 // Pausable is a service that can be paused
 type Pausable interface {
+	// Pause should pause operations within your app immediately
 	Pause()
+
+	// Resume should resume operations within your app immediately
 	Resume()
+
+	// Flip should invert the pause state in an atomic manner
 	Flip()
+
+	// Should report the pause state
 	Paused() bool
 }
 
 // HealthCheckable describes a application that can be checked using the backplane
 type HealthCheckable interface {
+	// HealthCheck should return as its result a struct that can be JSON converted
 	HealthCheck() (result interface{}, ok bool)
 }
 
 // Stopable describes an application that can be stopped using the backplane
 type Stopable interface {
+	// Shutdown will be called after some delay and should exit the application
 	Shutdown()
 }
 

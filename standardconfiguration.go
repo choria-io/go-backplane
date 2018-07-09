@@ -5,7 +5,7 @@ package backplane
 // to give users the ability to configure the backplane
 type StandardConfiguration struct {
 	Brokers       []string      `json:"brokers" yaml:"brokers"`
-	Collective    string        `json:"collective" yaml:"collective"`
+	AppName       string        `json:"name" yaml:"name"`
 	LogFilePath   string        `json:"logfile" yaml:"logfile"`
 	Loglevel      string        `json:"loglevel" yaml:"loglevel"`
 	TLSConf       *TLSConf      `json:"tls" yaml:"tls"`
@@ -17,9 +17,9 @@ func (s *StandardConfiguration) MiddlewareHosts() []string {
 	return s.Brokers
 }
 
-// Collectives is a list of collectives to join, the first will be the main collective
-func (s *StandardConfiguration) Collectives() []string {
-	return []string{s.Collective}
+// Name is a name for the application which will be used as a name for the collective the nodes are in
+func (s *StandardConfiguration) Name() string {
+	return s.AppName
 }
 
 // LogFile is the file to log to
