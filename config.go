@@ -5,19 +5,21 @@ import (
 	"regexp"
 	"time"
 
+	"github.com/choria-io/go-protocol/protocol"
+
 	"github.com/choria-io/go-choria/choria"
 	chconf "github.com/choria-io/go-choria/config"
 )
 
 // Config configures the backplane
 type Config struct {
+	name         string
 	auth         Authorization
 	brokers      []string
 	appname      string
 	logfile      string
 	loglevel     string
 	tls          *TLSConf
-	name         string
 	provider     ConfigProvider
 	opts         []Option
 	fw           *choria.Framework
@@ -128,7 +130,6 @@ func newConfig(name string, cfg ConfigProvider, opts ...Option) (c *Config, err 
 	c.ccfg.LogLevel = c.loglevel
 	c.ccfg.Choria.UseSRVRecords = false
 	c.ccfg.Choria.MiddlewareHosts = c.brokers
-	c.ccfg.DisableTLS = true
 
 	if c.tls != nil {
 		c.ccfg.DisableTLS = false
@@ -151,6 +152,9 @@ func newConfig(name string, cfg ConfigProvider, opts ...Option) (c *Config, err 
 		default:
 			return nil, fmt.Errorf("security provider '%s' is not supported", c.tls.Scheme)
 		}
+	} else {
+		c.ccfg.DisableTLS = true
+		protocol.Secure = "false"
 	}
 
 	c.fw, err = choria.NewWithConfig(c.ccfg)

@@ -1,14 +1,10 @@
 package: github.com/choria-io/go-backplane
 import:
 - package: github.com/choria-io/go-choria
-  subpackages:
-  - choria
-  - config
-  - mcorpc
-  - mcorpc/golang
-  - server
-  - server/agents
+  version: 9f4cb9c669a3905d32152720bc1cec925cf2947f
 - package: github.com/sirupsen/logrus
   version: ^1
 - package: gopkg.in/alecthomas/kingpin.v2
   version: ^2.2.6
+- package: github.com/fatih/color
+  version: ^1.7.0

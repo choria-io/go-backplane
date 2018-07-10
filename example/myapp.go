@@ -25,7 +25,7 @@ type Config struct {
 type App struct {
 	config     *Config
 	paused     bool
-	configured bool // setting this is not shown
+	configured bool
 }
 
 func (a *App) work(ctx context.Context, wg *sync.WaitGroup) {

@@ -8,6 +8,8 @@ import (
 	"os"
 	"sync"
 	"time"
+
+	"github.com/choria-io/go-choria/build"
 )
 
 // InfoSource supplies fact data
@@ -60,13 +62,38 @@ func (m *Management) fsWriter(ctx context.Context, wg *sync.WaitGroup, fs InfoSo
 	}
 }
 
+func (m *Management) convertFacts(fs InfoSource) (out map[string]interface{}, err error) {
+	in, err := json.Marshal(fs.FactData())
+	if err != nil {
+		return
+	}
+
+	err = json.Unmarshal(in, &out)
+	if err != nil {
+		return
+	}
+
+	out["backplane_version"] = build.Version
+	out["backplane_name"] = m.cfg.name
+	out["backplane_pausable"] = m.cfg.pausable != nil
+	out["backplane_stopable"] = m.cfg.stopable != nil
+	out["backplane_healthcheckable"] = m.cfg.healthcheckable != nil
+
+	return
+}
+
 func (m *Management) write(fs InfoSource, target string) error {
 	m.factsMu.Lock()
 	defer m.factsMu.Unlock()
 
 	m.log.Debugf("Starting fact source dump to %s", target)
 
-	j, err := json.Marshal(fs.FactData())
+	facts, err := m.convertFacts(fs)
+	if err != nil {
+		return err
+	}
+
+	j, err := json.Marshal(facts)
 	if err != nil {
 		return err
 	}
