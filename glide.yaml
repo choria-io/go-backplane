@@ -1,7 +1,7 @@
 package: github.com/choria-io/go-backplane
 import:
 - package: github.com/choria-io/go-choria
-  version: 9f4cb9c669a3905d32152720bc1cec925cf2947f
+  version: ebcfadb86d24803f468d4a94b49252399e5e4361
 - package: github.com/sirupsen/logrus
   version: ^1
 - package: gopkg.in/alecthomas/kingpin.v2

@@ -8,6 +8,7 @@ import (
 
 	"github.com/choria-io/go-choria/choria"
 	"github.com/choria-io/go-choria/mcorpc"
+	"github.com/choria-io/go-choria/mcorpc/ddl/agent"
 	"github.com/choria-io/go-choria/server/agents"
 )
 
@@ -73,15 +74,7 @@ type PingReply struct {
 }
 
 func (m *Management) startAgents(ctx context.Context) (err error) {
-	md := &agents.Metadata{
-		Name:        "backplane",
-		Description: "Choria Management Backplane",
-		Author:      "R.I.Pienaar <rip@devco.net>",
-		Version:     Version,
-		License:     "Apache-2.0",
-		URL:         "https://choria.io",
-		Timeout:     10,
-	}
+	md := AgentMetadata()
 
 	agent := mcorpc.New(md.Name, md, m.cfg.fw, m.log.WithField("agent", md.Name))
 
@@ -226,4 +219,80 @@ func (m *Management) pinfo(r *mcorpc.Reply) {
 	r.Data = &PausableReply{
 		Paused: m.cfg.pausable.Paused(),
 	}
+}
+
+// AgentMetadata returns the agent metadata
+func AgentMetadata() *agents.Metadata {
+	return &agents.Metadata{
+		Name:        "backplane",
+		Description: "Choria Management Backplane",
+		Author:      "R.I.Pienaar <rip@devco.net>",
+		Version:     Version,
+		License:     "Apache-2.0",
+		URL:         "https://choria.io",
+		Timeout:     10,
+	}
+}
+
+// AgentDDL creates a DDL for the agent
+func AgentDDL() *agent.DDL {
+	ddl := &agent.DDL{
+		Metadata: AgentMetadata(),
+		Actions:  []*agent.Action{},
+		Schema:   "https://choria.io/schemas/mcorpc/ddl/v1/agent.json",
+	}
+
+	act := &agent.Action{
+		Name:        "ping",
+		Description: "Backplane communications test",
+		Display:     "failed",
+		Input:       json.RawMessage("{}"),
+		Output:      make(map[string]*agent.ActionOutputItem),
+	}
+
+	ddl.Actions = append(ddl.Actions, act)
+
+	act = &agent.Action{
+		Name:        "info",
+		Description: "Information about the managed service",
+		Display:     "always",
+		Input:       json.RawMessage("{}"),
+		Output:      make(map[string]*agent.ActionOutputItem),
+	}
+
+	ddl.Actions = append(ddl.Actions, act)
+
+	act = &agent.Action{
+		Name:        "shutdown",
+		Description: "Terminates the managed service",
+		Display:     "failed",
+		Input:       json.RawMessage("{}"),
+		Output:      make(map[string]*agent.ActionOutputItem),
+	}
+
+	ddl.Actions = append(ddl.Actions, act)
+
+	act = &agent.Action{
+		Name:        "health",
+		Description: "Checks the health of the managed service",
+		Display:     "failed",
+		Input:       json.RawMessage("{}"),
+		Output:      make(map[string]*agent.ActionOutputItem),
+	}
+
+	ddl.Actions = append(ddl.Actions, act)
+
+	for _, action := range []string{"pause", "resume", "flip"} {
+		act = &agent.Action{
+			Name:        action,
+			Description: action,
+			Display:     "always",
+			Input:       json.RawMessage("{}"),
+			Output:      make(map[string]*agent.ActionOutputItem),
+		}
+
+		ddl.Actions = append(ddl.Actions, act)
+	}
+
+	return ddl
 }
