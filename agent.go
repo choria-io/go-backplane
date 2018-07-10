@@ -38,16 +38,19 @@ type Stopable interface {
 	Shutdown()
 }
 
-type healthReply struct {
+// HealthReply is the reply from the health action
+type HealthReply struct {
 	Result  json.RawMessage `json:"result"`
 	Healthy bool            `json:"healthy"`
 }
 
-type stopReply struct {
+// ShutdownReply is the reply from the shutdown action
+type ShutdownReply struct {
 	Delay string `json:"delay"`
 }
 
-type infoReply struct {
+// InfoReply is the reply from the info action
+type InfoReply struct {
 	BackplaneVersion string      `json:"backplane_version"`
 	Version          string      `json:"version"`
 	Paused           bool        `json:"paused"`
@@ -59,17 +62,19 @@ type infoReply struct {
 	FactsFeature     bool        `json:"facts_feature"`
 }
 
-type simpleReply struct {
+// PausableReply is the reply format expected from Pausable actions
+type PausableReply struct {
 	Paused bool `json:"paused"`
 }
 
-type pingReply struct {
+// PingReply is the reply format from the ping action
+type PingReply struct {
 	Version string `json:"version"`
 }
 
 func (m *Management) startAgents(ctx context.Context) (err error) {
 	md := &agents.Metadata{
-		Name:        m.cfg.name,
+		Name:        "backplane",
 		Description: "Choria Management Backplane",
 		Author:      "R.I.Pienaar <rip@devco.net>",
 		Version:     Version,
@@ -133,24 +138,20 @@ func (m *Management) fullAction(a mcorpc.Action) mcorpc.Action {
 }
 
 func (m *Management) pingAction(ctx context.Context, req *mcorpc.Request, reply *mcorpc.Reply, agent *mcorpc.Agent, conn choria.ConnectorInfo) {
-	reply.Data = &pingReply{
+	reply.Data = &PingReply{
 		Version: agent.Metadata().Version,
 	}
 }
 
 func (m *Management) healthAction(ctx context.Context, req *mcorpc.Request, reply *mcorpc.Reply, agent *mcorpc.Agent, conn choria.ConnectorInfo) {
 	r, ok := m.cfg.healthcheckable.HealthCheck()
-	if !ok {
-		reply.Statuscode = mcorpc.Aborted
-		reply.Statusmsg = "Service is not healthy"
-	}
 
 	j, err := json.Marshal(r)
 	if err != nil {
 		j = []byte(`{"error":"could not JSON encode result"}`)
 	}
 
-	reply.Data = &healthReply{
+	reply.Data = &HealthReply{
 		Healthy: ok,
 		Result:  json.RawMessage(j),
 	}
@@ -169,7 +170,7 @@ func (m *Management) shutdownAction(ctx context.Context, req *mcorpc.Request, re
 
 	go r(delay)
 
-	reply.Data = stopReply{
+	reply.Data = ShutdownReply{
 		Delay: delay.String(),
 	}
 }
@@ -177,23 +178,23 @@ func (m *Management) shutdownAction(ctx context.Context, req *mcorpc.Request, re
 func (m *Management) pauseAction(ctx context.Context, req *mcorpc.Request, reply *mcorpc.Reply, agent *mcorpc.Agent, conn choria.ConnectorInfo) {
 	m.cfg.pausable.Pause()
 
-	m.sinfo(reply)
+	m.pinfo(reply)
 }
 
 func (m *Management) resumeAction(ctx context.Context, req *mcorpc.Request, reply *mcorpc.Reply, agent *mcorpc.Agent, conn choria.ConnectorInfo) {
 	m.cfg.pausable.Resume()
 
-	m.sinfo(reply)
+	m.pinfo(reply)
 }
 
 func (m *Management) flipAction(ctx context.Context, req *mcorpc.Request, reply *mcorpc.Reply, agent *mcorpc.Agent, conn choria.ConnectorInfo) {
 	m.cfg.pausable.Flip()
 
-	m.sinfo(reply)
+	m.pinfo(reply)
 }
 
 func (m *Management) infoAction(ctx context.Context, req *mcorpc.Request, reply *mcorpc.Reply, agent *mcorpc.Agent, conn choria.ConnectorInfo) {
-	info := &infoReply{
+	info := &InfoReply{
 		BackplaneVersion: agent.Metadata().Version,
 		Version:          "unknown",
 	}
@@ -221,8 +222,8 @@ func (m *Management) infoAction(ctx context.Context, req *mcorpc.Request, reply 
 	reply.Data = info
 }
 
-func (m *Management) sinfo(r *mcorpc.Reply) {
-	r.Data = &simpleReply{
+func (m *Management) pinfo(r *mcorpc.Reply) {
+	r.Data = &PausableReply{
 		Paused: m.cfg.pausable.Paused(),
 	}
 }

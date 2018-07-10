@@ -1,5 +1,5 @@
-hash: a2307463c3ac4561b91d8a005f206cc063b4fed06208d233aea1fc27e94ac7b5
-updated: 2018-07-06T16:45:52.412517+03:00
+hash: 632287e4a2742376549f5756381151e9a06516e4d351c1898a2c570b3fa44bac
+updated: 2018-07-10T18:54:21.14062+03:00
 imports:
 - name: github.com/alecthomas/template
   version: a0175ee3bccc567396460bf5acd36800cb10c49c
@@ -12,7 +12,7 @@ imports:
   subpackages:
   - quantile
 - name: github.com/choria-io/go-choria
-  version: ca8738ea05f42fb6247d3cafd17337636fce2dd9
+  version: 9f4cb9c669a3905d32152720bc1cec925cf2947f
   subpackages:
   - backoff
   - build
@@ -20,6 +20,8 @@ imports:
   - config
   - mcorpc
   - mcorpc/audit
+  - mcorpc/client
+  - mcorpc/ddl/agent
   - mcorpc/golang
   - mcorpc/golang/choriautil
   - mcorpc/golang/discovery
@@ -37,6 +39,11 @@ imports:
   - server/discovery/identity
   - server/registration
   - srvcache
+- name: github.com/choria-io/go-client
+  version: 3abc5542c103b7a2c1990c099097dc756c0de4dc
+  subpackages:
+  - client
+  - discovery/broadcast
 - name: github.com/choria-io/go-confkey
   version: 634d2c41860498507b0c7eeb2f8a33b1aa6a809d
 - name: github.com/choria-io/go-protocol
@@ -60,6 +67,8 @@ imports:
   - maxlength
   - regex
   - shellsafe
+- name: github.com/fatih/color
+  version: 5b77d2a35fb0ede96d138fc9a99f5c9b6aef11b4
 - name: github.com/ghodss/yaml
   version: 0ca9ea5df5451ffdf184b4428c902747c2c11cd7
   subpackages:
@@ -117,6 +126,8 @@ imports:
   version: bd5ef7bd5415a7ac448318e64f11a24cd21e594b
 - name: github.com/xeipuuv/gojsonschema
   version: 9ff6d6c47f3f5de55acc6f464d6e3719b02818ae
+- name: go.uber.org/atomic
+  version: 1ea20fb1cbb1cc08cbd0d913a96dead89aa18289
 - name: golang.org/x/crypto
   version: 9477e0b78b9ac3d0b03822fd95422e2fe07627cd
   subpackages:

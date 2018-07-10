@@ -51,7 +51,12 @@ func Run(ctx context.Context, wg *sync.WaitGroup, conf ConfigProvider, opts ...O
 	m.log = m.cfg.fw.Logger("backplane")
 
 	if m.cfg.infosource != nil {
-		m.exposeFacts(ctx, wg)
+		f, err := m.exposeFacts(ctx, wg)
+		if err != nil {
+			return nil, fmt.Errorf("could not expose facts: %s", err)
+		}
+
+		m.cfg.ccfg.FactSourceFile = f
 	}
 
 	err = m.startServer(ctx, wg)
