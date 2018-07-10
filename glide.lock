@@ -1,5 +1,5 @@
-hash: 632287e4a2742376549f5756381151e9a06516e4d351c1898a2c570b3fa44bac
-updated: 2018-07-10T18:54:21.14062+03:00
+hash: e666deb5eaa2ececae0a270e6e3b1a6749457af50540aed2329caba65e4087d7
+updated: 2018-07-10T21:31:49.132817+03:00
 imports:
 - name: github.com/alecthomas/template
   version: a0175ee3bccc567396460bf5acd36800cb10c49c
@@ -12,7 +12,7 @@ imports:
   subpackages:
   - quantile
 - name: github.com/choria-io/go-choria
-  version: 9f4cb9c669a3905d32152720bc1cec925cf2947f
+  version: ebcfadb86d24803f468d4a94b49252399e5e4361
   subpackages:
   - backoff
   - build
@@ -83,6 +83,10 @@ imports:
   version: df1d3ca07d2d07bba352d5b73c4313b4e2a6203e
   subpackages:
   - proto
+- name: github.com/mattn/go-colorable
+  version: efa589957cd060542a26d2dd7832fd6a6c6c3ade
+- name: github.com/mattn/go-isatty
+  version: 6ca4dbf54d38eea1a992b3c722a76a5d1c4cb25c
 - name: github.com/matttproud/golang_protobuf_extensions
   version: c12348ce28de40eed0136aa2b644d0ee0650e56c
   subpackages:

@@ -13,15 +13,15 @@ Once embedded you can manage your fleet with commands like this:
 Pause, resume and request info for all services in `DC1`
 
 ```
-$ mco rpc backplane pause -W dc=DC1
+$ backplane yourapp pause -W dc=DC1
 ```
 
 ```
-$ mco rpc backplane resume -W dc=DC1
+$ backplane yourapp resume -W dc=DC1
 ```
 
 ```
-$ mco rpc backplane health -W dc=DC1
+$ backplane yourapp health -W dc=DC1
 ```
 
 [![GoDoc](https://godoc.org/github.com/choria-io/go-backplane?status.svg)](https://godoc.org/github.com/choria-io/go-backplane)
@@ -48,8 +48,6 @@ While a similar outcome can be achieved with a side car model - simply write a R
 
 ## Roadmap
 
-  * Ability to add your own actions to the agent
-  * Ability to pass in entire agents into the running instance
   * Thread dump endpoint
 
 ## Exposed Actions

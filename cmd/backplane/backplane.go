@@ -93,7 +93,7 @@ func execute() error {
 
 	log = fw.Logger("backplane")
 
-	rpc, err = rpcc.New(fw, "backplane")
+	rpc, err = rpcc.New(fw, "backplane", rpcc.DDL(backplane.AgentDDL()))
 	if err != nil {
 		return fmt.Errorf("could not create agent: %s", err)
 	}
