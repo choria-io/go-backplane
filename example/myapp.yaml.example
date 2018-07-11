@@ -4,7 +4,7 @@ name: app
 
 # Standard Backplane specific configuration here
 management:
-    collective: app
+    name: app
     logfile: backplane.log
     loglevel: info
     tls:
