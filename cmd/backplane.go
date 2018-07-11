@@ -32,10 +32,7 @@ var (
 	service string
 
 	wf       []string
-	wc       []string
-	wa       []string
 	wi       []string
-	with     []string
 	timeout  int
 	cfile    string
 	insecure bool
@@ -63,9 +60,7 @@ func Run() {
 	e.Arg("action", "Action to perform against the managed service").Required().EnumVar(&action, "pause", "resume", "flip", "health", "shutdown", "ping", "info")
 
 	e.Flag("wf", "Match services with a certain fact").Short('F').PlaceHolder("FACTS").StringsVar(&wf)
-	e.Flag("wc", "Match services with a certain configuration management class").Short('C').PlaceHolder("CLASS").StringsVar(&wc)
 	e.Flag("wi", "Match services with a certain Choria identity").Short('I').PlaceHolder("IDENTITY").StringsVar(&wi)
-	e.Flag("with", "Combined classes and facts filter").Short('W').PlaceHolder("FILTER").StringsVar(&with)
 	e.Flag("timeout", "How long to wait for services to respond").IntVar(&timeout)
 	e.Flag("config", "Configuration file to use").StringVar(&cfile)
 	e.Flag("insecure", "Disable TLS security").BoolVar(&insecure)
@@ -275,10 +270,7 @@ func configure() (*choria.Framework, error) {
 func discover() (n []string, err error) {
 	filter, err := client.NewFilter(
 		client.FactFilter(wf...),
-		client.AgentFilter(wa...),
-		client.ClassFilter(wc...),
 		client.IdentityFilter(wi...),
-		client.CombinedFilter(with...),
 	)
 	if err != nil {
 		return n, fmt.Errorf("could not parse filters: %s", err)
