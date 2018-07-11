@@ -1,4 +1,4 @@
-package main
+package cmd
 
 import (
 	"context"
@@ -12,12 +12,12 @@ import (
 	"text/tabwriter"
 	"time"
 
+	"github.com/choria-io/go-backplane/backplane"
 	"github.com/choria-io/go-choria/mcorpc"
 	"github.com/fatih/color"
 
 	"github.com/sirupsen/logrus"
 
-	"github.com/choria-io/go-backplane"
 	"github.com/choria-io/go-choria/choria"
 	"github.com/choria-io/go-choria/config"
 	rpcc "github.com/choria-io/go-choria/mcorpc/client"
@@ -49,7 +49,7 @@ var (
 	verbose bool
 )
 
-func main() {
+func Run() {
 	app := kingpin.New("backplane", "Choria Backplane")
 	app.Version(backplane.Version)
 	app.Author("R.I.Pienaar <rip@devco.net>")

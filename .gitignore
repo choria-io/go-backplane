@@ -1,4 +1,4 @@
 vendor
-cmd/backplane/backplane
+go-backplane
 example/example
 example/myapp.yaml
