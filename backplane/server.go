@@ -21,7 +21,10 @@ func (m *Management) startServer(ctx context.Context, wg *sync.WaitGroup) (err e
 	server.RegisterAdditionalAgentProvider(&gorpc.Provider{})
 
 	wg.Add(1)
-	m.cserver.Run(ctx, wg)
+	err = m.cserver.Run(ctx, wg)
+	if err != nil {
+		return
+	}
 
 	return
 }
