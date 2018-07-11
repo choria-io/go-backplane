@@ -17,6 +17,7 @@ import (
 // Config configures myapp
 type Config struct {
 	Interval   int                              `yaml:"interval"`
+	Name       string                           `yaml:"name"`
 	Management *backplane.StandardConfiguration `yaml:"management"`
 }
 
@@ -31,17 +32,17 @@ type App struct {
 func (a *App) work(ctx context.Context, wg *sync.WaitGroup) {
 	defer wg.Done()
 
-	ticker := time.NewTicker(time.Duration(a.config.Interval) * time.Millisecond)
+	ticker := time.NewTicker(time.Duration(a.config.Interval) * time.Second)
 
 	for {
 		select {
 		case <-ticker.C:
 			if a.Paused() {
-				log.Printf("Skipping work while paused")
+				log.Printf(a.config.Name + ": skipping work while paused")
 				continue
 			}
 
-			log.Println("doing work")
+			log.Println(a.config.Name + ": doing work")
 		case <-ctx.Done():
 			return
 		}

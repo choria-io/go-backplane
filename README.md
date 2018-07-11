@@ -275,3 +275,149 @@ Once you call `startBackPlane()` in your startup cycle it will start a Choria in
 If you only supply some of `ManageInfoSource`, `ManagePausable`, `ManageHealthCheck` and `ManageStopable` the features of the agent will be selectively disabled as per the table earlier.
 
 All backplane managed services will use the `backplane` agent name, to differentiate the `name` will be used to construct a sub collective name so each app is effectively contained. The upcoming CLI will be built around this design.
+
+## Docker Demo
+
+A Docker based demo is included, you need `docker-compose` setup and working, this demo sets up 2 backplane services and the CLI ready to use, no Choria infrastructure is needed when security is not configured, just a NATS server.  This demo uses the official NATS image for this.
+
+```
+$ docker-compose up --scale demo1=2 --scale demo2=2
+....
+demo2_1   | 2018/07/11 08:48:52 demo2: doing work
+demo1_1   | 2018/07/11 08:48:52 demo1: doing work
+demo2_2   | 2018/07/11 08:48:53 demo2: doing work
+demo1_2   | 2018/07/11 08:48:54 demo1: doing work
+demo2_1   | 2018/07/11 08:48:54 demo2: doing work
+demo1_1   | 2018/07/11 08:48:54 demo1: doing work
+demo2_2   | 2018/07/11 08:48:55 demo2: doing work
+```
+
+This starts 2 instances of the 2 demo services up along with a broker, it will open port 4222 on your host.
+
+From another shell you can now use the backplane CLI to manage this network, replace the IP address with the address on your network card.
+
+**NOTE:** We pass `--insecure` else the system will initiate the Choria security system requiring certificates etc which the compose demo does not have.
+
+Lets look at the information available about the services, their features and more:
+
+```
+$ docker run -e BROKER=192.168.1.78:4222 backplane --insecure demo2 info
+Starting discovery process for demo2 backplan managed services: 2
+
+Performing info... ✓ 2 / 2
+
+  ceb29c26146b:
+           App Version: 0.0.1
+     Backplane Version: 0.0.2
+                Paused: false
+               Healthy: true
+         Pause Feature: ✓
+         Facts Feature: ✓
+        Health Feature: ✓
+      Shutdown Feature: ✓
+
+  b93660b8feb6:
+           App Version: 0.0.1
+     Backplane Version: 0.0.2
+                Paused: false
+               Healthy: true
+         Pause Feature: ✓
+         Facts Feature: ✓
+        Health Feature: ✓
+      Shutdown Feature: ✓
+
+
+Managed 2 service(s) in 22ms
+```
+
+You can circuit break the services which should stop any work from happening in the ones you target:
+
+```
+% docker run -e BROKER=192.168.1.78:4222 backplane --insecure demo2 pause
+Starting discovery process for demo2 backplan managed services: 2
+
+Performing pause... ✓ 2 / 2
+
+
+Managed 2 service(s) in 36ms
+```
+
+Your logs will now show lines like `demo2: skipping work while paused`.
+
+A note about the Choria display model, generally we assume you will manage large numbers of nodes or services and will try to show what is relevant.  In the above command it showed no output about individual services because it was able to successfully pause each.  It would only show you failures.  However when we requested `info` obviously you'd like to see the data so it shows it.
+
+You can resume the work again:
+
+```
+% docker run -e BROKER=192.168.1.78:4222 backplane --insecure demo2 resume
+...
+```
+
+All instances should resume logging `doing work` lines.
+
+You can use this setup to test your own embedded services, just point them at this broker without configuring TLS in their configuration and they should be visible via the CLI.
+
+The demo applications do not support much by way of facts as they are very simple at the moment, you can see from `backplane help exec` though that complex filtering is supported:
+
+```
+usage: backplane exec [<flags>] <service> <action>
+
+Executes a action against a set of backplane managed services
+
+Flags:
+      --help             Show context-sensitive help (also try --help-long and --help-man).
+      --version          Show application version.
+  -v, --verbose          Enable verbose output
+  -d, --debug            Enable debug logging
+  -F, --wf=FACTS ...     Match services with a certain fact
+  -C, --wc=CLASS ...     Match services with a certain configuration management class
+  -I, --wi=IDENTITY ...  Match services with a certain Choria identity
+  -W, --with=FILTER ...  Combined classes and facts filter
+      --timeout=TIMEOUT  How long to wait for services to respond
+      --config=CONFIG    Configuration file to use
+      --insecure         Disable TLS security
+
+Args:
+  <service>  The services name to manage
+  <action>   Action to perform against the managed service
+```
+
+Using this we could for example pause just one specific service:
+
+```
+% docker run -e BROKER=192.168.1.78:4222 backplane --insecure demo2 pause -I 1786991ad26d
+Starting discovery process for demo2 backplan managed services: 1
+
+Performing pause... ✓ 1 / 1
+
+
+Managed 1 service(s) in 19ms
+```
+
+Only 1 node were managed, info confirms:
+
+```
+Performing info... ✓ 2 / 2
+
+  117a7530ac36:
+           App Version: 0.0.1
+     Backplane Version: 0.0.2
+                Paused: false
+               Healthy: true
+         Pause Feature: ✓
+         Facts Feature: ✓
+        Health Feature: ✓
+      Shutdown Feature: ✓
+
+  1786991ad26d:
+           App Version: 0.0.1
+     Backplane Version: 0.0.2
+                Paused: true
+               Healthy: true
+         Pause Feature: ✓
+         Facts Feature: ✓
+        Health Feature: ✓
+      Shutdown Feature: ✓
+```
+
+1 is paused and 1 is not, your logs should also confirm.

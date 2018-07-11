@@ -114,7 +114,7 @@ func newConfig(name string, cfg ConfigProvider, opts ...Option) (c *Config, err 
 		c.loglevel = "warn"
 	}
 
-	ok, err := regexp.MatchString("^[a-z]+_backplane$", c.appname)
+	ok, err := regexp.MatchString("^[a-z0-9]+_backplane$", c.appname)
 	if !ok || err != nil {
 		return nil, fmt.Errorf("the application name must match ^[a-z0-9]+$")
 	}
@@ -155,6 +155,7 @@ func newConfig(name string, cfg ConfigProvider, opts ...Option) (c *Config, err 
 	} else {
 		c.ccfg.DisableTLS = true
 		protocol.Secure = "false"
+		c.ccfg.Choria.SecurityProvider = "file"
 	}
 
 	c.fw, err = choria.NewWithConfig(c.ccfg)

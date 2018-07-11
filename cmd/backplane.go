@@ -49,6 +49,7 @@ var (
 	verbose bool
 )
 
+// Run runs the backplane command line
 func Run() {
 	app := kingpin.New("backplane", "Choria Backplane")
 	app.Version(backplane.Version)
@@ -212,9 +213,17 @@ func performAction(action string, cb func(s string, r *rpcc.RPCReply, last bool)
 		return err
 	}
 
-	replies, stats := request(action, json.RawMessage("{}"), len(nodes))
+	if len(nodes) == 0 {
+		return fmt.Errorf("did not discover any nodes")
+	}
+
+	replies, stats, err := request(action, json.RawMessage("{}"), len(nodes))
+	if err != nil {
+		return fmt.Errorf("request failed: %s", err)
+	}
+
 	if len(replies) == 0 {
-		return fmt.Errorf("No responses received")
+		return fmt.Errorf("no responses received")
 	}
 
 	count := len(replies)
@@ -251,6 +260,7 @@ func configure() (*choria.Framework, error) {
 
 	if insecure {
 		cfg.DisableTLS = true
+		cfg.Choria.SecurityProvider = "file"
 		protocol.Secure = "false"
 	}
 
@@ -319,11 +329,11 @@ func twirl(msg string, max int, current int) string {
 	return fmt.Sprintf(format, msg, char, current, max)
 }
 
-func request(action string, input json.RawMessage, expected int) (replies map[string]*rpcc.RPCReply, stats *rpcc.Stats) {
+func request(action string, input json.RawMessage, expected int) (replies map[string]*rpcc.RPCReply, stats *rpcc.Stats, err error) {
 	replies = make(map[string]*rpcc.RPCReply)
 	cnt := 0
 
-	result, _ := rpc.Do(ctx, action, input, rpcc.ReplyHandler(func(r protocol.Reply, rep *rpcc.RPCReply) {
+	result, err := rpc.Do(ctx, action, input, rpcc.ReplyHandler(func(r protocol.Reply, rep *rpcc.RPCReply) {
 		mu.Lock()
 		defer mu.Unlock()
 
@@ -333,6 +343,10 @@ func request(action string, input json.RawMessage, expected int) (replies map[st
 
 		fmt.Print(twirl(fmt.Sprintf("Performing %s...", action), expected, cnt))
 	}))
+
+	if err != nil {
+		return
+	}
 
 	fmt.Printf("\n\n")
 
