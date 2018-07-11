@@ -370,9 +370,7 @@ Flags:
   -v, --verbose          Enable verbose output
   -d, --debug            Enable debug logging
   -F, --wf=FACTS ...     Match services with a certain fact
-  -C, --wc=CLASS ...     Match services with a certain configuration management class
   -I, --wi=IDENTITY ...  Match services with a certain Choria identity
-  -W, --with=FILTER ...  Combined classes and facts filter
       --timeout=TIMEOUT  How long to wait for services to respond
       --config=CONFIG    Configuration file to use
       --insecure         Disable TLS security
@@ -381,6 +379,8 @@ Args:
   <service>  The services name to manage
   <action>   Action to perform against the managed service
 ```
+
+The facts that would be exposed for filtering are those from the InfoSource and you could for example do `-F Interval=600` in this case - directly exposed from the example app configuration.
 
 Using this we could for example pause just one specific service:
 
