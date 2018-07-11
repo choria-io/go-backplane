@@ -76,7 +76,7 @@ To allow your application to be health checked you need to implement the `Health
 
 ```go
 import (
-    backplane "github.com/choria-io/go-backplane"
+    backplane "github.com/choria-io/go-backplane/backplane"
 )
 
 type App struct {

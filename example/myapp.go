@@ -10,7 +10,7 @@ import (
 	"syscall"
 	"time"
 
-	backplane "github.com/choria-io/go-backplane"
+	backplane "github.com/choria-io/go-backplane/backplane"
 	"gopkg.in/yaml.v2"
 )
 
