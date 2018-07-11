@@ -1,0 +1,22 @@
+version: "3"
+services:
+  broker:
+    image: nats
+    ports:
+      - 4222:4222
+  demo1:
+    image: choria/backplane
+    environment:
+      NAME: demo1
+      BROKER: broker:4222
+      EXAMPLE: 1
+    links:
+      - broker
+  demo2:
+    image: choria/backplane
+    environment:
+      NAME: demo2
+      BROKER: broker:4222
+      EXAMPLE: 1
+    links:
+      - broker
