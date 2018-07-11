@@ -1,5 +1,5 @@
-hash: 762da003a6652d55b3beaaef0df0f74dca49a3a097593340a46baea63543f775
-updated: 2018-07-11T16:58:02.425091+03:00
+hash: f3572e0d138a54c0cedfabc7d93a15cf3fa61997a5ba42aee71874ba2af32208
+updated: 2018-07-11T17:42:02.26393+03:00
 imports:
 - name: github.com/alecthomas/template
   version: a0175ee3bccc567396460bf5acd36800cb10c49c
@@ -12,7 +12,7 @@ imports:
   subpackages:
   - quantile
 - name: github.com/choria-io/go-choria
-  version: 00e31d4d5d8a97d2501663d1576478537f800e34
+  version: 81e5738251112629783f683d3c4e01686bc5d85b
   subpackages:
   - backoff
   - build
