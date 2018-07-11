@@ -15,6 +15,9 @@ func (m *Management) startServer(ctx context.Context, wg *sync.WaitGroup) (err e
 		return fmt.Errorf("could not initialize the backplane Choria Server: %s", err)
 	}
 
+	m.cserver.DenyAgent("rpcutil")
+	m.cserver.DenyAgent("choria_util")
+
 	server.RegisterAdditionalAgentProvider(&gorpc.Provider{})
 
 	wg.Add(1)
