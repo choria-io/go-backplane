@@ -1,14 +1,13 @@
 #!/bin/bash
 
-mkdir -p /etc/puppetlabs/mcollective/
+mkdir -p /etc/choria
 
-cat <<EOF > /etc/puppetlabs/mcollective/client.cfg
+cat <<EOF > /etc/choria/client.cfg
 loglevel = warn
 plugin.choria.middleware_hosts = ${BROKER}
 EOF
 
 cat <<EOF > /myapp.yaml
-# your own config here
 interval: 2
 name: ${NAME}
 
