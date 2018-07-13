@@ -301,7 +301,7 @@ From another shell you can now use the backplane CLI to manage this network, rep
 Lets look at the information available about the services, their features and more:
 
 ```
-$ docker run -e BROKER=192.168.1.78:4222 backplane --insecure demo2 info
+$ docker run -e BROKER=192.168.1.78:4222 choria/backplane --insecure demo2 info
 Starting discovery process for demo2 backplan managed services: 2
 
 Performing info... ✓ 2 / 2
@@ -333,7 +333,7 @@ Managed 2 service(s) in 22ms
 You can circuit break the services which should stop any work from happening in the ones you target:
 
 ```
-% docker run -e BROKER=192.168.1.78:4222 backplane --insecure demo2 pause
+% docker run -e BROKER=192.168.1.78:4222 choria/backplane --insecure demo2 pause
 Starting discovery process for demo2 backplan managed services: 2
 
 Performing pause... ✓ 2 / 2
@@ -349,7 +349,7 @@ A note about the Choria display model, generally we assume you will manage large
 You can resume the work again:
 
 ```
-% docker run -e BROKER=192.168.1.78:4222 backplane --insecure demo2 resume
+% docker run -e BROKER=192.168.1.78:4222 choria/backplane --insecure demo2 resume
 ...
 ```
 
@@ -385,7 +385,7 @@ The facts that would be exposed for filtering are those from the InfoSource and 
 Using this we could for example pause just one specific service:
 
 ```
-% docker run -e BROKER=192.168.1.78:4222 backplane --insecure demo2 pause -I 1786991ad26d
+% docker run -e BROKER=192.168.1.78:4222 choria/backplane --insecure demo2 pause -I 1786991ad26d
 Starting discovery process for demo2 backplan managed services: 1
 
 Performing pause... ✓ 1 / 1
