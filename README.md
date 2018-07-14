@@ -64,7 +64,36 @@ The following actions are exposed to the Choria network:
 |shutdown  |Shuts down your service after short delay|Stopable|
 |health    |Checks the internal health of your service|HealthCheckable|
 
-## Embeding
+## Infrastructure Requirements
+
+The backplane agents use a Middleware server to connect to the management CLI. If you already have [Choria](https://choria.io) installed you have everything you need.  If you do not have Choria you can install if you wish, alternatively you just need a [NATS](https://github.com/nats-io/gnatsd) Server.
+
+Installing Choria has a number of advantages:
+
+ * You get a richer [RPC CLI](https://choria.io/docs/concepts/cli/), Ruby API and [Playbooks](https://choria.io/docs/playbooks/) that can all interact with your backplane
+ * You can scale to massive scale and [federate multiple sites, regions, networks](https://choria.io/docs/federation/) together
+
+If you chose not to install Choria the `backplane` CLI can be downloaded from the releases page, it needs a small config file like:
+
+```
+loglevel = warning
+plugin.choria.middleware_hosts = nats.example.net:4222
+```
+
+Place this in `/etc/choria/client.cfg`, if you configured Choria the `backplane` CLI will just work.
+
+## Setting up the Choria Client for Ruby API, Go API, CLI and Playbooks
+
+If you wish to use the Ruby API or Choria CLI you should install the [mcollective_agent_backplane](https://forge.puppet.com/choria/mcollective_agent_backplane/readme) module from the Puppet Forge
+
+```
+mcollective::plugin_classes:
+  - mcollective_agent_backplane
+```
+
+From there the usual `mco rpc`, Ruby API's and Playbooks will function.  For more information about Choria see it's [website](https://choria.io).
+
+## Embeding in your application
 
 To embed this backplane in your own Go code you need to implement a few interfaces, not all are required you can selectively enable just what you need.
 
