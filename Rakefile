@@ -36,6 +36,7 @@ task :prep_version do
   abort("Please specify VERSION") unless ENV["VERSION"]
 
   Rake::FileList["**/*.ddl"].each do |file|
+    puts "Setting version %s in %s" % [ENV["VERSION"], file]
     sh 'sed -i"" -re \'s/(\s+:version\s+=>\s+").+/\1%s",/\' %s' % [ENV["VERSION"], file]
   end
 end
@@ -43,7 +44,6 @@ end
 desc "Prepares for a release"
 task :build_prep do
   if ENV["VERSION"]
-    Rake::Task[:test].execute
     Rake::Task[:prep_version].execute
   end
 

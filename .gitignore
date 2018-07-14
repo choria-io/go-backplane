@@ -7,3 +7,6 @@ puppet/README.md
 puppet/CHANGELOG.md
 puppet/LICENSE
 puppet/NOTICE
+choria-mcollective_agent_backplane*
+.ruby-version
+agent/backplane.json
