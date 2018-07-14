@@ -6,7 +6,7 @@ builds:
       - linux
     goarch:
       - amd64
-    ldflags: "-X backplane.Version={{.Version}}"
+    ldflags: "-X github.com/choria-io/go-backplane/backplane.Version={{.Version}}"
 
 archive:
   format: tar.gz
@@ -20,7 +20,9 @@ archive:
     - README.md
 
 release:
-  owner: choria-io
-  name: go-backplane
+  github:
+    owner: choria-io
+    name: go-backplane
+
   draft: true
   name_template: "{{.Version}}"
