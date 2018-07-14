@@ -2,3 +2,4 @@ vendor
 go-backplane
 example/example
 example/myapp.yaml
+dist

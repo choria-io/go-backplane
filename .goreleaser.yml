@@ -1,0 +1,20 @@
+builds:
+  - binary: backplane
+    goos:
+      - windows
+      - darwin
+      - linux
+    goarch:
+      - amd64
+    ldflags: "-X backplane.Version={{.Version}}"
+
+archive:
+  format: tar.gz
+  wrap_in_directory: true
+  name_template: "backplane-v{{.Version}}-{{.Os}}-{{.Arch}}"
+  replacements:
+    amd64: 64bit
+    darwin: macos
+  files:
+    - LICENSE
+    - README.md
