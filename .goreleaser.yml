@@ -18,3 +18,9 @@ archive:
   files:
     - LICENSE
     - README.md
+
+release:
+  owner: choria-io
+  name: go-backplane
+  draft: true
+  name_template: "{{.Version}}"
