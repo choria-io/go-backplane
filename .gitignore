@@ -3,3 +3,7 @@ go-backplane
 example/example
 example/myapp.yaml
 dist
+puppet/README.md
+puppet/CHANGELOG.md
+puppet/LICENSE
+puppet/NOTICE
