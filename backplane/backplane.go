@@ -25,7 +25,7 @@ import (
 )
 
 // Version is the version of the management backplane
-const Version = "0.1.0"
+var Version = "development"
 
 // Management is a embeddable Choria based backplane for your Go application
 type Management struct {
