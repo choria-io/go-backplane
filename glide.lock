@@ -1,5 +1,5 @@
-hash: f54e4babec052c8dbcdbcfbe7ff82e185f4fd118bfbcb1184ecc9278afb15811
-updated: 2018-07-12T08:31:36.4695+03:00
+hash: 0895028e2d86283ac60eadf1dcc8b52f82c929e295cf8312d16c6d6919b66230
+updated: 2018-07-23T18:43:17.181149+02:00
 imports:
 - name: github.com/alecthomas/template
   version: a0175ee3bccc567396460bf5acd36800cb10c49c
@@ -12,21 +12,12 @@ imports:
   subpackages:
   - quantile
 - name: github.com/choria-io/go-choria
-  version: d199c482ed387e0963918e9d0771de199893f16b
+  version: 0bdd11848047642529130834321fc703dc6a7b57
   subpackages:
   - backoff
   - build
   - choria
   - config
-  - mcorpc
-  - mcorpc/audit
-  - mcorpc/client
-  - mcorpc/ddl/agent
-  - mcorpc/golang
-  - mcorpc/golang/choriautil
-  - mcorpc/golang/discovery
-  - mcorpc/golang/provision
-  - mcorpc/golang/rpcutil
   - puppet
   - registration
   - server
@@ -40,7 +31,7 @@ imports:
   - server/registration
   - srvcache
 - name: github.com/choria-io/go-client
-  version: 3abc5542c103b7a2c1990c099097dc756c0de4dc
+  version: 58387294cadadd69e21972cecc10064e83f7ae8e
   subpackages:
   - client
   - discovery/broadcast
@@ -67,6 +58,18 @@ imports:
   - maxlength
   - regex
   - shellsafe
+- name: github.com/choria-io/mcorpc-agent-provider
+  version: 33fa69cae7f6be38513efd52e51a24553758bda6
+  subpackages:
+  - mcorpc
+  - mcorpc/audit
+  - mcorpc/client
+  - mcorpc/ddl/agent
+  - mcorpc/golang
+  - mcorpc/golang/choriautil
+  - mcorpc/golang/discovery
+  - mcorpc/golang/provision
+  - mcorpc/golang/rpcutil
 - name: github.com/fatih/color
   version: 5b77d2a35fb0ede96d138fc9a99f5c9b6aef11b4
 - name: github.com/ghodss/yaml
@@ -119,7 +122,7 @@ imports:
 - name: github.com/satori/go.uuid
   version: f58768cc1a7a7e77a3bd49e98cdd21419399b6a3
 - name: github.com/sirupsen/logrus
-  version: c155da19408a8799da419ed3eeb0cb5db0ad5dbc
+  version: 3e01752db0189b9157070a0e1668a620f9a85da2
 - name: github.com/tidwall/gjson
   version: 01f00f129617a6fe98941fb920d6c760241b54d2
 - name: github.com/tidwall/match

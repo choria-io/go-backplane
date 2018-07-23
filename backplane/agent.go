@@ -7,9 +7,9 @@ import (
 	"time"
 
 	"github.com/choria-io/go-choria/choria"
-	"github.com/choria-io/go-choria/mcorpc"
-	"github.com/choria-io/go-choria/mcorpc/ddl/agent"
 	"github.com/choria-io/go-choria/server/agents"
+	"github.com/choria-io/mcorpc-agent-provider/mcorpc"
+	"github.com/choria-io/mcorpc-agent-provider/mcorpc/ddl/agent"
 )
 
 // Pausable is a service that can be paused
