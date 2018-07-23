@@ -13,16 +13,16 @@ import (
 	"time"
 
 	"github.com/choria-io/go-backplane/backplane"
-	"github.com/choria-io/go-choria/mcorpc"
+	"github.com/choria-io/mcorpc-agent-provider/mcorpc"
 	"github.com/fatih/color"
 
 	"github.com/sirupsen/logrus"
 
 	"github.com/choria-io/go-choria/choria"
 	"github.com/choria-io/go-choria/config"
-	rpcc "github.com/choria-io/go-choria/mcorpc/client"
 	"github.com/choria-io/go-client/client"
 	"github.com/choria-io/go-protocol/protocol"
+	rpcc "github.com/choria-io/mcorpc-agent-provider/mcorpc/client"
 
 	kingpin "gopkg.in/alecthomas/kingpin.v2"
 )
