@@ -1,5 +1,7 @@
 |Date      |Issue |Description                                                                                              |
 |----------|------|---------------------------------------------------------------------------------------------------------|
+|2018/08/08|      |Release 1.0.0                                                                                            |
+|2018/07/14|38    |Fix setting versions in built binaries                                                                   |
 |2018/07/14|      |Release 0.2.0                                                                                            |
 |2018/07/14|38    |Add goreleaser packaging support                                                                         |
 |2018/07/11|17    |Handle errors during initial connection to middleware                                                    |

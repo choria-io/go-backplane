@@ -1,5 +1,5 @@
 hash: 0895028e2d86283ac60eadf1dcc8b52f82c929e295cf8312d16c6d6919b66230
-updated: 2018-07-23T18:43:17.181149+02:00
+updated: 2018-08-08T11:10:51.956077+02:00
 imports:
 - name: github.com/alecthomas/template
   version: a0175ee3bccc567396460bf5acd36800cb10c49c
@@ -12,7 +12,7 @@ imports:
   subpackages:
   - quantile
 - name: github.com/choria-io/go-choria
-  version: 0bdd11848047642529130834321fc703dc6a7b57
+  version: 632e18b78c0e8d67a2d4e3ba624963959ce58b94
   subpackages:
   - backoff
   - build
@@ -31,14 +31,14 @@ imports:
   - server/registration
   - srvcache
 - name: github.com/choria-io/go-client
-  version: 58387294cadadd69e21972cecc10064e83f7ae8e
+  version: 9f8afdf705fdf1e08ed970d8a61a52936205119c
   subpackages:
   - client
   - discovery/broadcast
 - name: github.com/choria-io/go-confkey
   version: 634d2c41860498507b0c7eeb2f8a33b1aa6a809d
 - name: github.com/choria-io/go-protocol
-  version: 284592cb18f97f9854a797f6147142cc5ddc551c
+  version: c3117476636777d60c00a86b2d4b2b8fc56addb4
   subpackages:
   - protocol
   - protocol/v1
