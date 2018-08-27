@@ -17,6 +17,7 @@ func (m *Management) startServer(ctx context.Context, wg *sync.WaitGroup) (err e
 
 	m.cserver.DenyAgent("rpcutil")
 	m.cserver.DenyAgent("choria_util")
+	m.cserver.SetComponent("backplane")
 
 	server.RegisterAdditionalAgentProvider(&gorpc.Provider{})
 
