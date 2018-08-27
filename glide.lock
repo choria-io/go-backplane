@@ -1,5 +1,5 @@
-hash: 0895028e2d86283ac60eadf1dcc8b52f82c929e295cf8312d16c6d6919b66230
-updated: 2018-08-08T11:10:51.956077+02:00
+hash: ccb28f63f0cb23f0aa1bd0c30d6a8978d12cc123e1bc3eb4dde205697677b238
+updated: 2018-08-27T23:20:40.738001+02:00
 imports:
 - name: github.com/alecthomas/template
   version: a0175ee3bccc567396460bf5acd36800cb10c49c
@@ -12,12 +12,14 @@ imports:
   subpackages:
   - quantile
 - name: github.com/choria-io/go-choria
-  version: 632e18b78c0e8d67a2d4e3ba624963959ce58b94
+  version: 86b6965cd06e13279436213653875a4927319eb7
   subpackages:
   - backoff
   - build
   - choria
   - config
+  - provtarget
+  - provtarget/builddefaults
   - puppet
   - registration
   - server
@@ -37,6 +39,8 @@ imports:
   - discovery/broadcast
 - name: github.com/choria-io/go-confkey
   version: 634d2c41860498507b0c7eeb2f8a33b1aa6a809d
+- name: github.com/choria-io/go-lifecycle
+  version: acdc39b1e82eaf94581803b4b0e6a411cd55c55c
 - name: github.com/choria-io/go-protocol
   version: c3117476636777d60c00a86b2d4b2b8fc56addb4
   subpackages:
@@ -59,7 +63,7 @@ imports:
   - regex
   - shellsafe
 - name: github.com/choria-io/mcorpc-agent-provider
-  version: 33fa69cae7f6be38513efd52e51a24553758bda6
+  version: db0e90dac9f99b7020cae441072057fd480ce9cc
   subpackages:
   - mcorpc
   - mcorpc/audit
@@ -68,8 +72,11 @@ imports:
   - mcorpc/golang
   - mcorpc/golang/choriautil
   - mcorpc/golang/discovery
-  - mcorpc/golang/provision
   - mcorpc/golang/rpcutil
+- name: github.com/choria-io/provisioning-agent
+  version: 455f60923a422606693cb5310b311d61298799c4
+  subpackages:
+  - agent
 - name: github.com/fatih/color
   version: 5b77d2a35fb0ede96d138fc9a99f5c9b6aef11b4
 - name: github.com/ghodss/yaml
@@ -124,7 +131,7 @@ imports:
 - name: github.com/sirupsen/logrus
   version: 3e01752db0189b9157070a0e1668a620f9a85da2
 - name: github.com/tidwall/gjson
-  version: 01f00f129617a6fe98941fb920d6c760241b54d2
+  version: 1e3f6aeaa5bad08d777ea7807b279a07885dd8b2
 - name: github.com/tidwall/match
   version: 1731857f09b1f38450e2c12409748407822dc6be
 - name: github.com/xeipuuv/gojsonpointer

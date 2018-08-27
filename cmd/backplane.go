@@ -21,6 +21,7 @@ import (
 	"github.com/choria-io/go-choria/choria"
 	"github.com/choria-io/go-choria/config"
 	"github.com/choria-io/go-client/client"
+	"github.com/choria-io/go-client/discovery/broadcast"
 	"github.com/choria-io/go-protocol/protocol"
 	rpcc "github.com/choria-io/mcorpc-agent-provider/mcorpc/client"
 
@@ -37,6 +38,8 @@ var (
 	cfile    string
 	insecure bool
 
+	fw      *choria.Framework
+	err     error
 	rpc     *rpcc.RPC
 	ctx     context.Context
 	cancel  func()
@@ -82,7 +85,7 @@ func Run() {
 }
 
 func execute() error {
-	fw, err := configure()
+	fw, err = configure()
 	if err != nil {
 		return err
 	}
@@ -278,7 +281,9 @@ func discover() (n []string, err error) {
 
 	fmt.Printf("Starting discovery process for %s backplan managed services: ", service)
 
-	n, err = rpc.Discover(ctx, filter)
+	b := broadcast.New(fw)
+
+	n, err = b.Discover(ctx, broadcast.Filter(filter))
 	if err != nil {
 		fmt.Println("")
 		return n, fmt.Errorf("could not perform discovery: %s", err)
