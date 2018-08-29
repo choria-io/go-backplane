@@ -1,5 +1,7 @@
 |Date      |Issue |Description                                                                                              |
 |----------|------|---------------------------------------------------------------------------------------------------------|
+|2018/08/08|      |Release 1.0.1                                                                                            |
+|2018/08/27|50    |Emit lifecycle events on startup                                                                         |
 |2018/08/08|      |Release 1.0.0                                                                                            |
 |2018/07/14|38    |Fix setting versions in built binaries                                                                   |
 |2018/07/14|      |Release 0.2.0                                                                                            |
