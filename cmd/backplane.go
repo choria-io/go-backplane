@@ -279,7 +279,7 @@ func discover() (n []string, err error) {
 		return n, fmt.Errorf("could not parse filters: %s", err)
 	}
 
-	fmt.Printf("Starting discovery process for %s backplan managed services: ", service)
+	fmt.Printf("Starting discovery process for %s backplane managed services: ", service)
 
 	b := broadcast.New(fw)
 
