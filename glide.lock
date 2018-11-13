@@ -1,5 +1,5 @@
-hash: ccb28f63f0cb23f0aa1bd0c30d6a8978d12cc123e1bc3eb4dde205697677b238
-updated: 2018-08-27T23:20:40.738001+02:00
+hash: 95a72dcb99642196fbe8de0570c1f7a7a35e7574bec10078999afbfb0edbbb46
+updated: 2018-11-13T18:53:49.728233709+01:00
 imports:
 - name: github.com/alecthomas/template
   version: a0175ee3bccc567396460bf5acd36800cb10c49c
@@ -8,16 +8,17 @@ imports:
 - name: github.com/alecthomas/units
   version: 2efee857e7cfd4f3d0138cc3cbb1b4966962b93a
 - name: github.com/beorn7/perks
-  version: 4c0e84591b9aa9e6dcfdf3e020114cd81f89d5f9
+  version: 3a771d992973f24aa725d07868b467d1ddfceafb
   subpackages:
   - quantile
 - name: github.com/choria-io/go-choria
-  version: 86b6965cd06e13279436213653875a4927319eb7
+  version: 33ad178673e24e73fc3917c2074422c0fe7afd1c
   subpackages:
   - backoff
   - build
   - choria
   - config
+  - plugin
   - provtarget
   - provtarget/builddefaults
   - puppet
@@ -40,7 +41,7 @@ imports:
 - name: github.com/choria-io/go-confkey
   version: 634d2c41860498507b0c7eeb2f8a33b1aa6a809d
 - name: github.com/choria-io/go-lifecycle
-  version: acdc39b1e82eaf94581803b4b0e6a411cd55c55c
+  version: d46c4b2ca99b1c31cfc83995484dc93d4fd7a3d5
 - name: github.com/choria-io/go-protocol
   version: c3117476636777d60c00a86b2d4b2b8fc56addb4
   subpackages:
@@ -63,7 +64,7 @@ imports:
   - regex
   - shellsafe
 - name: github.com/choria-io/mcorpc-agent-provider
-  version: db0e90dac9f99b7020cae441072057fd480ce9cc
+  version: c6aa986d8a0ca81fca4994b3ce3dea22fd5f63fc
   subpackages:
   - mcorpc
   - mcorpc/audit
@@ -74,7 +75,7 @@ imports:
   - mcorpc/golang/discovery
   - mcorpc/golang/rpcutil
 - name: github.com/choria-io/provisioning-agent
-  version: 455f60923a422606693cb5310b311d61298799c4
+  version: c681a9124e6fac7500b0a94cf3b603122051e223
   subpackages:
   - agent
 - name: github.com/fatih/color
@@ -90,19 +91,21 @@ imports:
   - gomock
   - mockgen
 - name: github.com/golang/protobuf
-  version: 1643683e1b54a9e88ad26d98f81400c8c9d9f4f9
+  version: 1918e1ff6ffd2be7bed0553df8650672c3bfe80d
   subpackages:
   - proto
+- name: github.com/konsorten/go-windows-terminal-sequences
+  version: 5c8c8bd35d3832f5d134ae1e1e375b69a4d25242
 - name: github.com/mattn/go-colorable
   version: efa589957cd060542a26d2dd7832fd6a6c6c3ade
 - name: github.com/mattn/go-isatty
-  version: 6ca4dbf54d38eea1a992b3c722a76a5d1c4cb25c
+  version: 3fb116b820352b7f0c281308a4d6250c22d94e27
 - name: github.com/matttproud/golang_protobuf_extensions
   version: c12348ce28de40eed0136aa2b644d0ee0650e56c
   subpackages:
   - pbutil
 - name: github.com/nats-io/go-nats
-  version: 062418ea1c2181f52dc0f954f6204370519a868b
+  version: fb0396ee0bdb8018b0fef30d6d1de798ce99cd05
   subpackages:
   - encoders/builtin
   - util
@@ -113,33 +116,35 @@ imports:
   subpackages:
   - prometheus
 - name: github.com/prometheus/client_model
-  version: 99fa1f4be8e564e8a6b613da7fa6f46c9edafc6c
+  version: 5c3871d89910bfb32f5fcab2aa4b9ec68e65a99f
   subpackages:
   - go
 - name: github.com/prometheus/common
-  version: 89604d197083d4781071d3c65855d24ecfb0a563
+  version: 7e9e6cabbd393fc208072eedef99188d0ce788b6
   subpackages:
   - expfmt
   - internal/bitbucket.org/ww/goautoneg
   - model
 - name: github.com/prometheus/procfs
-  version: b15cd069a83443be3154b719d0cc9fe8117f09fb
+  version: 185b4288413d2a0dd0806f78c90dde719829e5ae
   subpackages:
+  - internal/util
+  - nfs
   - xfs
 - name: github.com/satori/go.uuid
   version: f58768cc1a7a7e77a3bd49e98cdd21419399b6a3
 - name: github.com/sirupsen/logrus
-  version: 3e01752db0189b9157070a0e1668a620f9a85da2
+  version: bcd833dfe83d3cebad139e4a29ed79cb2318bf95
 - name: github.com/tidwall/gjson
-  version: 1e3f6aeaa5bad08d777ea7807b279a07885dd8b2
+  version: 081192fa2e471ddff3ec98a3cc04fecfd031ed57
 - name: github.com/tidwall/match
   version: 1731857f09b1f38450e2c12409748407822dc6be
 - name: github.com/xeipuuv/gojsonpointer
-  version: 6fe8760cad3569743d51ddbb243b26f8456742dc
+  version: 4e3ac2762d5f479393488629ee9370b50873b3a6
 - name: github.com/xeipuuv/gojsonreference
-  version: e02fc20de94c78484cd5ffb007f8af96be030a45
+  version: bd5ef7bd5415a7ac448318e64f11a24cd21e594b
 - name: github.com/xeipuuv/gojsonschema
-  version: 511d08a359d14c0dd9c4302af52ee9abb6f93c2a
+  version: f3a9dae5b19473510a3062802a98815f609ed747
 - name: go.uber.org/atomic
   version: 1ea20fb1cbb1cc08cbd0d913a96dead89aa18289
 - name: golang.org/x/crypto
@@ -147,15 +152,15 @@ imports:
   subpackages:
   - ssh/terminal
 - name: golang.org/x/net
-  version: 5ccada7d0a7ba9aeb5d3aca8d3501b4c2a509fec
+  version: c10e9556a7bc0e7c942242b606f0acf024ad5d6a
   subpackages:
   - context
 - name: golang.org/x/sys
-  version: f7928cfef4d09d1b080aa2b6fd3ca9ba1567c733
+  version: 66b7b1311ac80bbafcd2daeef9a5e6e2cd1e2399
   subpackages:
   - unix
 - name: gopkg.in/alecthomas/kingpin.v2
   version: 947dcec5ba9c011838740e680966fd7087a71d0d
 - name: gopkg.in/yaml.v2
-  version: d670f9405373e636a5a2765eea47fac0c9bc91a4
+  version: 5420a8b6744d3b0345ab293f6fcba19c978f1183
 testImports: []
