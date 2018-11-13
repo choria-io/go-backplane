@@ -215,7 +215,7 @@ func performAction(action string, cb func(s string, r *rpcc.RPCReply, last bool)
 		return fmt.Errorf("did not discover any nodes")
 	}
 
-	replies, stats, err := request(action, json.RawMessage("{}"), len(nodes))
+	replies, stats, err := request(action, json.RawMessage("{}"), nodes)
 	if err != nil {
 		return fmt.Errorf("request failed: %s", err)
 	}
@@ -326,11 +326,11 @@ func twirl(msg string, max int, current int) string {
 	return fmt.Sprintf(format, msg, char, current, max)
 }
 
-func request(action string, input json.RawMessage, expected int) (replies map[string]*rpcc.RPCReply, stats *rpcc.Stats, err error) {
+func request(action string, input json.RawMessage, nodes []string) (replies map[string]*rpcc.RPCReply, stats *rpcc.Stats, err error) {
 	replies = make(map[string]*rpcc.RPCReply)
 	cnt := 0
 
-	result, err := rpc.Do(ctx, action, input, rpcc.ReplyHandler(func(r protocol.Reply, rep *rpcc.RPCReply) {
+	result, err := rpc.Do(ctx, action, input, rpcc.Targets(nodes), rpcc.ReplyHandler(func(r protocol.Reply, rep *rpcc.RPCReply) {
 		mu.Lock()
 		defer mu.Unlock()
 
@@ -338,7 +338,7 @@ func request(action string, input json.RawMessage, expected int) (replies map[st
 
 		replies[r.SenderID()] = rep
 
-		fmt.Print(twirl(fmt.Sprintf("Performing %s...", action), expected, cnt))
+		fmt.Print(twirl(fmt.Sprintf("Performing %s...", action), len(nodes), cnt))
 	}))
 
 	if err != nil {
