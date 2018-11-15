@@ -4,7 +4,7 @@ This is a embedable Choria Server that you can use to provide a backplane for yo
 
 You can use it to provide a secure, scalable and flexibile managment interface right inside your application with no dependencies other than a Choria broker infrastructure.
 
-At present it is focussed on creating circuit breakers, health checks and shutdown ations that allow you to affect change of a large fleet of (micro)services rapidly and securely via CLI, Ruby API, Go API or Playbooks.
+At present it is focussed on creating circuit breakers, health checks and shutdown actions that allow you to affect change of a large fleet of (micro)services rapidly and securely via CLI, Ruby API, Go API or Playbooks.
 
 Using the Choria discovery abilities you can target subsets of services across your entire fleet using metadata of your choice.
 
