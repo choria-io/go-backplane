@@ -78,6 +78,7 @@ func (m *Management) convertFacts(fs InfoSource) (out map[string]interface{}, er
 	out["backplane_pausable"] = m.cfg.pausable != nil
 	out["backplane_stopable"] = m.cfg.stopable != nil
 	out["backplane_healthcheckable"] = m.cfg.healthcheckable != nil
+	out["backplane_loglevelsetable"] = m.cfg.logsetable != nil
 
 	return
 }

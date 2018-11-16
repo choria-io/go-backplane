@@ -31,6 +31,7 @@ type Config struct {
 	infosource      InfoSource
 	healthcheckable HealthCheckable
 	stopable        Stopable
+	logsetable      LogLevelSetable
 }
 
 // TLSConf describes the TLS config for a NATS connection
@@ -164,6 +165,14 @@ func newConfig(name string, cfg ConfigProvider, opts ...Option) (c *Config, err 
 	}
 
 	return
+}
+
+// ManageLogLevel supplies a class that can have its log level adjusted
+// without supplying this the log level features are not enabled
+func ManageLogLevel(l LogLevelSetable) Option {
+	return func(c *Config) {
+		c.logsetable = l
+	}
 }
 
 // ManagePausable supplies a class that can be paused using the management agent

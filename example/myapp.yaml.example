@@ -1,6 +1,7 @@
 # your own config here
 interval: 600
 name: app
+loglevel: debug
 
 # Standard Backplane specific configuration here
 management:
