@@ -63,7 +63,7 @@ func Run() {
 
 	e := app.Command("exec", "Executes a action against a set of backplane managed services").Default()
 	e.Arg("service", "The services name to manage").Required().StringVar(&service)
-	e.Arg("action", "Action to perform against the managed service").Required().EnumVar(&action, "pause", "resume", "flip", "health", "shutdown", "ping", "info")
+	e.Arg("action", "Action to perform against the managed service").Required().EnumVar(&action, "pause", "resume", "flip", "health", "shutdown", "ping", "info", "debuglvl", "infolvl", "warnlvl", "critlvl")
 
 	e.Flag("wf", "Match services with a certain fact").Short('F').PlaceHolder("FACTS").StringsVar(&wf)
 	e.Flag("wi", "Match services with a certain Choria identity").Short('I').PlaceHolder("IDENTITY").StringsVar(&wi)
@@ -104,13 +104,22 @@ func execute() error {
 	case "pause", "resume", "flip":
 		wf = append(wf, "backplane_pausable=true")
 		err = genericRequest(action, false)
+
 	case "shutdown":
 		wf = append(wf, "backplane_stopable=true")
 		err = genericRequest(action, false)
+
 	case "health":
+		wf = append(wf, "backplane_healthcheckable=true")
 		err = healthRequest()
+
 	case "info":
 		err = infoRequest()
+
+	case "debuglvl", "infolvl", "warnlvl", "critlvl":
+		wf = append(wf, "backplane_loglevelsetable=true")
+		err = genericRequest(action, true)
+
 	case "ping":
 		err = genericRequest(action, true)
 	}
@@ -140,10 +149,14 @@ func infoRequest() error {
 			if info.HealthFeature {
 				fmt.Printf("               Healthy: %v\n", info.Healthy)
 			}
+			if info.LogLevelFeature {
+				fmt.Printf("             Log Level: %s\n", info.LogLevel)
+			}
 			fmt.Printf("         Pause Feature: %s\n", boolTick(info.PauseFeature))
 			fmt.Printf("         Facts Feature: %s\n", boolTick(info.FactsFeature))
 			fmt.Printf("        Health Feature: %s\n", boolTick(info.HealthFeature))
 			fmt.Printf("      Shutdown Feature: %s\n", boolTick(info.ShutdownFeature))
+			fmt.Printf("     Log Level Feature: %s\n", boolTick(info.LogLevelFeature))
 
 			if verbose {
 				formatter := prettyjson.NewFormatter()

@@ -4,7 +4,7 @@ This is a embedable Choria Server that you can use to provide a backplane for yo
 
 You can use it to provide a secure, scalable and flexibile managment interface right inside your application with no dependencies other than a Choria broker infrastructure.
 
-At present it is focussed on creating circuit breakers, health checks and shutdown actions that allow you to affect change of a large fleet of (micro)services rapidly and securely via CLI, Ruby API, Go API or Playbooks.
+At present it is focussed on creating circuit breakers, health checks, managing logging level and shutdown actions that allow you to affect change of a large fleet of (micro)services rapidly and securely via CLI, Ruby API, Go API or Playbooks.
 
 Using the Choria discovery abilities you can target subsets of services across your entire fleet using metadata of your choice.
 
@@ -24,6 +24,10 @@ $ backplane yourapp resume -W dc=DC1
 $ backplane yourapp health -W dc=DC1
 ```
 
+```
+$ backplane yourapp debuglvl -W dc=DC1
+```
+
 [![GoDoc](https://godoc.org/github.com/choria-io/go-backplane?status.svg)](https://godoc.org/github.com/choria-io/go-backplane)
 
 ## Motivation
@@ -41,6 +45,7 @@ While a similar outcome can be achieved with a side car model - simply write a R
   * Circuit breaker interface
   * Health Check interface
   * Shutdown interface
+  * Ability to switch running log levels of your applications
   * Standardised configuration
   * TLS using PuppetCA or manual configuration
   * Expose Facts to the Choria discovery system
@@ -63,6 +68,10 @@ The following actions are exposed to the Choria network:
 |flip      |If paused, resume.  If not paused, pause.|Pausable|
 |shutdown  |Shuts down your service after short delay|Stopable|
 |health    |Checks the internal health of your service|HealthCheckable|
+|debuglvl  |Sets the app to debug level logging|LogLevelSetable|
+|infolvl  |Sets the app to info level logging|LogLevelSetable|
+|warnlvl  |Sets the app to warning level logging|LogLevelSetable|
+|critlvl  |Sets the app to critical level logging|LogLevelSetable|
 
 ## Infrastructure Requirements
 
@@ -190,6 +199,42 @@ You can combine this with a `Pausable` to drain connections first, but we don't 
 
 Once enabled via the `backplane.ManageStopable()` option (see below under embedding) this will be accessible via the `shutdown` action.
 
+### Log Level
+
+You can allow the running log level of your application to be manipulated, to achieve this implement the `LogLevelSetable` interface:
+
+Backplane has just 4 levels that it knows about - Debug, Info, Warn and Critical - you have to create a bit of a translation between what your application understand, here is a example using logrus:
+
+```go
+func (a *App) SetLogLevel(level backplane.LogLevel) {
+	switch level {
+	case backplane.InfoLevel:
+		a.SetLogLevel(logrus.InfoLevel)
+    case backplane.WarnLevel:
+        a.SetLogLevel(logrus.WarnLevel)
+    case backplane.CriticalLevel:
+        a.SetLogLevel(logrus.FatalLevel)
+    default:
+        a.SetLogLevel(logrus.DebugLevel)
+	}
+}
+
+func (a *App) GetLogLevel() backplane.LogLevel {
+    switch a.LogLevel() {
+    case logrus.InfoLevel:
+        return backplane.InfoLevel
+    case logrus.WarnLevel:
+        return backplane.WarnLevel
+    case logrus.ErrorLevel, logrus.FatalLevel, logrus.PanicLevel:
+        return backplane.CriticalLevel
+    default:
+        return backplane.DebugLevel
+    }
+}
+```
+
+Once enabled via the `backplane.ManageLogLevel()` option (see below under embedding) this will be accessible via the `debuglvl`, `infolvl`, `warnlvl` and `critlvl` actions - `info` will show the active log level.
+
 ### Information Source
 
 The `InfoSource` interface is required to expose some internals of your application to Choria, you should mark the structure fields up with `json` tags as this will be serialized to JSON.
@@ -287,6 +332,7 @@ func (a *App) startBackPlane(ctx context.Context, wg *sync.Waitgroup) error {
             backplane.ManagePausable(a),
             backplane.ManageHealthCheck(a),
             backplane.ManageStopable(a),
+            backplane.ManageLogLevel(a),
         }
 
         _, err := backplane.Run(ctx, wg, a.config.Management, opts...)
@@ -301,7 +347,7 @@ func (a *App) startBackPlane(ctx context.Context, wg *sync.Waitgroup) error {
 
 Once you call `startBackPlane()` in your startup cycle it will start a Choria instance with the `discovery`, `choria_util` and `backplane` agents, the `backplane` agent will have all the actions listed in the earlier table, your config will be shown in the `info` action and you can discovery it using any of the facts.
 
-If you only supply some of `ManageInfoSource`, `ManagePausable`, `ManageHealthCheck` and `ManageStopable` the features of the agent will be selectively disabled as per the table earlier.
+If you only supply some of `ManageInfoSource`, `ManagePausable`, `ManageHealthCheck`, `ManageLogLevel` and `ManageStopable` the features of the agent will be selectively disabled as per the table earlier.
 
 All backplane managed services will use the `backplane` agent name, to differentiate the `name` will be used to construct a sub collective name so each app is effectively contained. The upcoming CLI will be built around this design.
 

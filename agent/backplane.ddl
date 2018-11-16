@@ -3,7 +3,7 @@ metadata    :name        => "backplane",
             :description => "Choria Management Backplane",
             :author      => "R.I.Pienaar <rip@devco.net>",
             :license     => "Apache-2.0",
-            :version     => "0.0.2",
+            :version     => "1.1.0",
             :url         => "https://choria.io/",
             :timeout     => 10
 
@@ -30,6 +30,10 @@ action "info", :description => "Information about the managed service" do
            :description => "Health Status",
            :display_as => "Healthy"
 
+    output :loglevel,
+           :description => "Active log level",
+           :display_as => "Log Level"
+
     output :healthcheck_feature,
            :description => "If the HealthCheckable interface is used",
            :display_as => "Health Feature"
@@ -45,6 +49,10 @@ action "info", :description => "Information about the managed service" do
     output :facts_feature,
            :description => "If the InfoSource interface is used",
            :display_as => "Facts Feature"
+
+    output :loglevel_feature,
+           :description => "If the LogLevelSetable interface is used",
+           :display_as => "Log Level Feature"
 
     summarize do
         aggregate summary(:version)
@@ -62,7 +70,6 @@ action "ping", :description => "Backplane communications test" do
         aggregate summary(:version)
     end   
 end
-            
 
 action "health", :description => "Checks the health of the managed service" do
     output :result,
@@ -79,15 +86,11 @@ action "health", :description => "Checks the health of the managed service" do
     end   
 end
 
-
-
 action "shutdown", :description => "Terminates the managed service" do
     output :delay,
             :description => "How long after running the action the shutdown will be initiated",
             :display_as => "Delay"
 end
-
-
 
 ["pause", "resume", "flip"].each do |act|
     action act, :description => "#{act.capitalize} the Circuit Breaker" do
@@ -99,6 +102,20 @@ end
 
         summarize do
             aggregate summary(:paused)
+        end
+    end
+end
+
+["debuglvl", "infolvl", "warnlvl", "critlvl"].each do |act|
+    action act, :description => "Set the logging level to #{act.gsub('lvl', '')}" do
+        display :always
+
+        output :level,
+               :description => "Log level that was activated",
+               :display_as => "Log Level"
+
+        summarize do
+            aggregate summary(:level)
         end
     end
 end

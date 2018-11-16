@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"math/rand"
+	"strings"
 	"time"
 
 	"github.com/choria-io/go-choria/choria"
@@ -39,6 +40,31 @@ type Stopable interface {
 	Shutdown()
 }
 
+// LogLevel is a valid log level
+type LogLevel int8
+
+const (
+	_ = iota
+
+	// DebugLevel is developer level debugging information
+	DebugLevel LogLevel = iota
+
+	// InfoLevel is end user informative information
+	InfoLevel
+
+	// WarnLevel is end user warning information
+	WarnLevel
+
+	// CriticalLevel is end user critical information
+	CriticalLevel
+)
+
+// LogLevelSetable describes an application that can have its log levels adjusted at runtime
+type LogLevelSetable interface {
+	SetLogLevel(LogLevel)
+	GetLogLevel() LogLevel
+}
+
 // HealthReply is the reply from the health action
 type HealthReply struct {
 	Result  json.RawMessage `json:"result"`
@@ -57,10 +83,12 @@ type InfoReply struct {
 	Paused           bool        `json:"paused"`
 	Facts            interface{} `json:"facts"`
 	Healthy          bool        `json:"healthy"`
+	LogLevel         string      `json:"loglevel"`
 	HealthFeature    bool        `json:"healthcheck_feature"`
 	PauseFeature     bool        `json:"pause_feature"`
 	ShutdownFeature  bool        `json:"shutdown_feature"`
 	FactsFeature     bool        `json:"facts_feature"`
+	LogLevelFeature  bool        `json:"loglevel_feature"`
 }
 
 // PausableReply is the reply format expected from Pausable actions
@@ -71,6 +99,11 @@ type PausableReply struct {
 // PingReply is the reply format from the ping action
 type PingReply struct {
 	Version string `json:"version"`
+}
+
+// LogLevelReply is the reply format from the log level actions
+type LogLevelReply struct {
+	Level string `json:"level"`
 }
 
 func (m *Management) startAgents(ctx context.Context) (err error) {
@@ -90,6 +123,13 @@ func (m *Management) startAgents(ctx context.Context) (err error) {
 
 	if m.cfg.healthcheckable != nil {
 		agent.MustRegisterAction("health", m.roAction(m.healthAction))
+	}
+
+	if m.cfg.logsetable != nil {
+		agent.MustRegisterAction("debuglvl", m.fullAction(m.debugLevelAction))
+		agent.MustRegisterAction("infolvl", m.fullAction(m.infoLevelAction))
+		agent.MustRegisterAction("warnlvl", m.fullAction(m.warnLevelAction))
+		agent.MustRegisterAction("critlvl", m.fullAction(m.critLevelAction))
 	}
 
 	agent.MustRegisterAction("info", m.roAction(m.infoAction))
@@ -127,6 +167,34 @@ func (m *Management) fullAction(a mcorpc.Action) mcorpc.Action {
 		defer m.mu.Unlock()
 
 		a(ctx, req, reply, agent, conn)
+	}
+}
+
+func (m *Management) debugLevelAction(ctx context.Context, req *mcorpc.Request, reply *mcorpc.Reply, agent *mcorpc.Agent, conn choria.ConnectorInfo) {
+	m.cfg.logsetable.SetLogLevel(DebugLevel)
+	reply.Data = &LogLevelReply{
+		Level: "debug",
+	}
+}
+
+func (m *Management) infoLevelAction(ctx context.Context, req *mcorpc.Request, reply *mcorpc.Reply, agent *mcorpc.Agent, conn choria.ConnectorInfo) {
+	m.cfg.logsetable.SetLogLevel(InfoLevel)
+	reply.Data = &LogLevelReply{
+		Level: "info",
+	}
+}
+
+func (m *Management) warnLevelAction(ctx context.Context, req *mcorpc.Request, reply *mcorpc.Reply, agent *mcorpc.Agent, conn choria.ConnectorInfo) {
+	m.cfg.logsetable.SetLogLevel(WarnLevel)
+	reply.Data = &LogLevelReply{
+		Level: "warning",
+	}
+}
+
+func (m *Management) critLevelAction(ctx context.Context, req *mcorpc.Request, reply *mcorpc.Reply, agent *mcorpc.Agent, conn choria.ConnectorInfo) {
+	m.cfg.logsetable.SetLogLevel(CriticalLevel)
+	reply.Data = &LogLevelReply{
+		Level: "critical",
 	}
 }
 
@@ -190,6 +258,7 @@ func (m *Management) infoAction(ctx context.Context, req *mcorpc.Request, reply 
 	info := &InfoReply{
 		BackplaneVersion: agent.Metadata().Version,
 		Version:          "unknown",
+		LogLevel:         "unknown",
 	}
 
 	if m.cfg.infosource != nil {
@@ -210,6 +279,22 @@ func (m *Management) infoAction(ctx context.Context, req *mcorpc.Request, reply 
 
 	if m.cfg.stopable != nil {
 		info.ShutdownFeature = true
+	}
+
+	if m.cfg.logsetable != nil {
+		switch m.cfg.logsetable.GetLogLevel() {
+		case DebugLevel:
+			info.LogLevel = "debug"
+		case InfoLevel:
+			info.LogLevel = "info"
+		case WarnLevel:
+			info.LogLevel = "warning"
+		case CriticalLevel:
+			info.LogLevel = "critical"
+		default:
+			info.LogLevel = "unknown"
+		}
+		info.LogLevelFeature = true
 	}
 
 	reply.Data = info
@@ -282,7 +367,19 @@ func AgentDDL() *agent.DDL {
 
 	ddl.Actions = append(ddl.Actions, act)
 
-	for _, action := range []string{"pause", "resume", "flip"} {
+	for _, action := range strings.Fields("pause resume flip") {
+		act = &agent.Action{
+			Name:        action,
+			Description: action,
+			Display:     "always",
+			Input:       json.RawMessage("{}"),
+			Output:      make(map[string]*agent.ActionOutputItem),
+		}
+
+		ddl.Actions = append(ddl.Actions, act)
+	}
+
+	for _, action := range strings.Fields("debuglvl infolvl warnlvl critlvl") {
 		act = &agent.Action{
 			Name:        action,
 			Description: action,

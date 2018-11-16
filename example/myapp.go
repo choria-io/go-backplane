@@ -18,6 +18,7 @@ import (
 type Config struct {
 	Interval   int                              `yaml:"interval"`
 	Name       string                           `yaml:"name"`
+	LogLevel   string                           `yaml:"loglevel"`
 	Management *backplane.StandardConfiguration `yaml:"management"`
 }
 
@@ -91,6 +92,7 @@ func main() {
 		backplane.ManagePausable(app),
 		backplane.ManageHealthCheck(app),
 		backplane.ManageStopable(app),
+		backplane.ManageLogLevel(app),
 	}
 
 	_, err = backplane.Run(ctx, wg, app.config.Management, opts...)
