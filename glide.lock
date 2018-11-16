@@ -1,5 +1,5 @@
-hash: 95a72dcb99642196fbe8de0570c1f7a7a35e7574bec10078999afbfb0edbbb46
-updated: 2018-11-13T18:53:49.728233709+01:00
+hash: 1b86fd689a93b35437d27e299d2000e145709078355ea00da354833d6090259f
+updated: 2018-11-16T14:27:44.419886123+01:00
 imports:
 - name: github.com/alecthomas/template
   version: a0175ee3bccc567396460bf5acd36800cb10c49c
@@ -12,7 +12,7 @@ imports:
   subpackages:
   - quantile
 - name: github.com/choria-io/go-choria
-  version: 33ad178673e24e73fc3917c2074422c0fe7afd1c
+  version: 684d9b00e1b5d35727bc46bffd3913b2ed45b8e6
   subpackages:
   - backoff
   - build
@@ -34,24 +34,26 @@ imports:
   - server/registration
   - srvcache
 - name: github.com/choria-io/go-client
-  version: 9f8afdf705fdf1e08ed970d8a61a52936205119c
+  version: 54bcd877b6c6d9c8bc96863910f2f32b67b081d1
   subpackages:
   - client
   - discovery/broadcast
 - name: github.com/choria-io/go-confkey
   version: 634d2c41860498507b0c7eeb2f8a33b1aa6a809d
 - name: github.com/choria-io/go-lifecycle
-  version: d46c4b2ca99b1c31cfc83995484dc93d4fd7a3d5
+  version: 6433dc8ede9dd3e3170dad048ef897e5088ecc66
 - name: github.com/choria-io/go-protocol
   version: c3117476636777d60c00a86b2d4b2b8fc56addb4
   subpackages:
   - protocol
   - protocol/v1
 - name: github.com/choria-io/go-security
-  version: a221c72ee79ab400346d38837d7e8b289857247b
+  version: 9c90c6ebc9548a8300fff479716bad9c739d6717
   subpackages:
   - filesec
   - puppetsec
+- name: github.com/choria-io/go-updater
+  version: 8c484a7b2a2a8e4fb51b3db81ff5dad15c512523
 - name: github.com/choria-io/go-validator
   version: 4ce2ef25983faa873cc4bcea0f1ef2a4273d42cc
   subpackages:
@@ -64,7 +66,7 @@ imports:
   - regex
   - shellsafe
 - name: github.com/choria-io/mcorpc-agent-provider
-  version: c6aa986d8a0ca81fca4994b3ce3dea22fd5f63fc
+  version: 279845170e27ad55f55a3ced2c442eb91ad5334d
   subpackages:
   - mcorpc
   - mcorpc/audit
@@ -75,7 +77,7 @@ imports:
   - mcorpc/golang/discovery
   - mcorpc/golang/rpcutil
 - name: github.com/choria-io/provisioning-agent
-  version: c681a9124e6fac7500b0a94cf3b603122051e223
+  version: c5300d23e090eda3904af8edb909f267d17825a0
   subpackages:
   - agent
 - name: github.com/fatih/color
@@ -85,6 +87,8 @@ imports:
   subpackages:
   - encoders/builtin
   - util
+- name: github.com/gofrs/uuid
+  version: 7077aa61129615a0d7f45c49101cd011ab221c27
 - name: github.com/golang/mock
   version: 8b2eeeb0ca5f56c78bec5efde9c4a21d9201126c
   subpackages:
@@ -94,6 +98,8 @@ imports:
   version: 1918e1ff6ffd2be7bed0553df8650672c3bfe80d
   subpackages:
   - proto
+- name: github.com/hokaccha/go-prettyjson
+  version: f579f869bbfea48a61fbea09207cadd1aaeceb83
 - name: github.com/konsorten/go-windows-terminal-sequences
   version: 5c8c8bd35d3832f5d134ae1e1e375b69a4d25242
 - name: github.com/mattn/go-colorable
@@ -131,8 +137,6 @@ imports:
   - internal/util
   - nfs
   - xfs
-- name: github.com/satori/go.uuid
-  version: f58768cc1a7a7e77a3bd49e98cdd21419399b6a3
 - name: github.com/sirupsen/logrus
   version: bcd833dfe83d3cebad139e4a29ed79cb2318bf95
 - name: github.com/tidwall/gjson

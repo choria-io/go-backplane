@@ -7,10 +7,13 @@ import (
 	"os"
 	"os/signal"
 	"strconv"
+	"strings"
 	"sync"
 	"syscall"
 	"text/tabwriter"
 	"time"
+
+	"github.com/hokaccha/go-prettyjson"
 
 	"github.com/choria-io/go-backplane/backplane"
 	"github.com/choria-io/mcorpc-agent-provider/mcorpc"
@@ -128,7 +131,7 @@ func infoRequest() error {
 				log.Errorf("Could not decode reply from %s: %s", svcs, err)
 			}
 
-			fmt.Printf("  %s:\n", svcs)
+			fmt.Printf("  %s:\n\n", svcs)
 			fmt.Printf("           App Version: %s\n", info.Version)
 			fmt.Printf("     Backplane Version: %s\n", info.BackplaneVersion)
 			if info.PauseFeature {
@@ -142,11 +145,25 @@ func infoRequest() error {
 			fmt.Printf("        Health Feature: %s\n", boolTick(info.HealthFeature))
 			fmt.Printf("      Shutdown Feature: %s\n", boolTick(info.ShutdownFeature))
 
-			fmt.Println("")
+			if verbose {
+				formatter := prettyjson.NewFormatter()
+				formatter.DisabledColor = true
+				p, err := formatter.Marshal(info.Facts)
+				if err == nil {
+					fmt.Println("                 Facts:")
+					fmt.Println(indentString(string(p), "                        "))
+				}
+			}
+
+			fmt.Println()
 		} else {
 			fmt.Printf("%40s:               %s\n", svcs, color.RedString(reply.Statusmsg))
 		}
 	})
+
+	if !verbose {
+		fmt.Println("\nPass -v to show contents of individual instance facts")
+	}
 
 	return err
 }
@@ -358,4 +375,19 @@ func boolTick(b bool) string {
 	}
 
 	return "✘"
+}
+
+func indentString(text string, indent string) string {
+	if text[len(text)-1:] == "\n" {
+		result := ""
+		for _, j := range strings.Split(text[:len(text)-1], "\n") {
+			result += indent + j + "\n"
+		}
+		return result
+	}
+	result := ""
+	for _, j := range strings.Split(strings.TrimRight(text, "\n"), "\n") {
+		result += indent + j + "\n"
+	}
+	return result[:len(result)-1]
 }

@@ -1,10 +1,11 @@
 package: github.com/choria-io/go-backplane
 import:
 - package: github.com/choria-io/go-choria
-  version: 0.7.0
+  version: 684d9b00e1b5d35727bc46bffd3913b2ed45b8e6
 - package: github.com/sirupsen/logrus
   version: ^1
 - package: gopkg.in/alecthomas/kingpin.v2
   version: ^2.2.6
 - package: github.com/fatih/color
   version: ^1.7.0
+- package: github.com/hokaccha/go-prettyjson
