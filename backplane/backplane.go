@@ -35,12 +35,14 @@ type Management struct {
 	factsMu *sync.Mutex
 	log     *logrus.Entry
 	agent   *mcorpc.Agent
+	outbox  chan *DataItem
 }
 
 // Run creates a new instance of the backplane
 func Run(ctx context.Context, wg *sync.WaitGroup, conf ConfigProvider, opts ...Option) (m *Management, err error) {
 	m = &Management{
-		mu: &sync.Mutex{},
+		mu:     &sync.Mutex{},
+		outbox: make(chan *DataItem, 1),
 	}
 
 	m.cfg, err = newConfig("backplane", conf, opts...)
@@ -69,5 +71,12 @@ func Run(ctx context.Context, wg *sync.WaitGroup, conf ConfigProvider, opts ...O
 		return nil, fmt.Errorf("could not start backplane agents: %s", err)
 	}
 
-	return
+	if m.cfg.publishdata {
+		err = m.startDataPublisher(ctx, wg)
+		if err != nil {
+			return nil, fmt.Errorf("could not start data publisher: %s", err)
+		}
+	}
+
+	return m, nil
 }

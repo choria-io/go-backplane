@@ -27,6 +27,7 @@ type Config struct {
 	factInterval time.Duration
 	maxStopDelay time.Duration
 
+	publishdata     bool
 	pausable        Pausable
 	infosource      InfoSource
 	healthcheckable HealthCheckable
@@ -131,6 +132,7 @@ func newConfig(name string, cfg ConfigProvider, opts ...Option) (c *Config, err 
 	c.ccfg.LogLevel = c.loglevel
 	c.ccfg.Choria.UseSRVRecords = false
 	c.ccfg.Choria.MiddlewareHosts = c.brokers
+	c.ccfg.RegistrationCollective = c.appname
 
 	if c.tls != nil {
 		c.ccfg.DisableTLS = false
@@ -218,5 +220,12 @@ func FactWriteInterval(i time.Duration) Option {
 func MaxStopDelay(i time.Duration) Option {
 	return func(c *Config) {
 		c.maxStopDelay = i
+	}
+}
+
+// StartDataPublisher starts a publisher for data to the Choria adapter system
+func StartDataPublisher() Option {
+	return func(c *Config) {
+		c.publishdata = true
 	}
 }

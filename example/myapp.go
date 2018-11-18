@@ -2,10 +2,12 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"io/ioutil"
 	"log"
 	"os"
 	"os/signal"
+	"strconv"
 	"sync"
 	"syscall"
 	"time"
@@ -26,6 +28,7 @@ type Config struct {
 // a circuit breaker, health check and shutdown backplane
 type App struct {
 	config     *Config
+	bp         *backplane.Management
 	paused     bool
 	configured bool
 }
@@ -43,11 +46,28 @@ func (a *App) work(ctx context.Context, wg *sync.WaitGroup) {
 				continue
 			}
 
-			log.Println(a.config.Name + ": doing work")
+			dat, err := a.data()
+			if err != nil {
+				log.Printf("Could not generate data: %s", err)
+				continue
+			}
+
+			a.bp.DataOutbox() <- &backplane.DataItem{Data: dat, Destination: "myapp.data"}
+
+			log.Println(a.config.Name + ": doing work - published " + string(dat))
 		case <-ctx.Done():
 			return
 		}
 	}
+}
+
+func (a *App) data() ([]byte, error) {
+	d := make(map[string]string)
+	d["name"] = a.config.Name
+	d["timestamp"] = strconv.Itoa(int(time.Now().Unix()))
+	d["work"] = "sample work"
+
+	return json.Marshal(&d)
 }
 
 func main() {
@@ -93,9 +113,10 @@ func main() {
 		backplane.ManageHealthCheck(app),
 		backplane.ManageStopable(app),
 		backplane.ManageLogLevel(app),
+		backplane.StartDataPublisher(),
 	}
 
-	_, err = backplane.Run(ctx, wg, app.config.Management, opts...)
+	app.bp, err = backplane.Run(ctx, wg, app.config.Management, opts...)
 	if err != nil {
 		log.Fatalf("Could not start backplane: %s", err)
 	}
