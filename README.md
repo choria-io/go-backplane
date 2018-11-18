@@ -46,6 +46,7 @@ While a similar outcome can be achieved with a side car model - simply write a R
   * Health Check interface
   * Shutdown interface
   * Ability to switch running log levels of your applications
+  * Ability to publish data from your app to the Choria Data Adapters that can convert the data to streaming data systems
   * Standardised configuration
   * TLS using PuppetCA or manual configuration
   * Expose Facts to the Choria discovery system
@@ -251,6 +252,51 @@ func (a *App) Version() string {
 }
 ```
 
+### Publishing Data 
+
+You can publish data from your application to the [Choria Data Adapter](https://choria.io/docs/adapters/) system which can receive the data in a scalable manner and transform it to Streaming Data system.
+
+This is useful for publishing IoT environmental data or other similar data to a network, your data will traverse the network maintained by the backplane and will be secured using PKI and TLS.  
+
+When you start the backplane (full details below) pass the `backplane.StartDataPublisher()` option to `backplane.Run()`.
+
+From your code you can publish any data:
+
+```go
+    // initialize the backplane, full example in "Starting the Server" section
+    opts := []backplane.Option{
+        // other options
+        backplane.StartDataPublisher(),
+    }
+
+    pb, err := backplane.Run(ctx, wg, a.config.Management, opts...)
+    if err != nil {
+        panic(err)
+    }
+
+    // dat is a []byte with any information you wish to publish
+    dat := gatherEnvironmentData()
+
+    // publishes data on a NATS topica called acme.iot
+    pb.DataOutbox() <- &backplane.DataItem{
+        Data: dat,
+        Destination: "acme.iot",
+    }
+```
+
+You can configure the Choria Broker to receive this data and publish it to NATS Streaming:
+
+```ini
+plugin.choria.adapters = iot
+plugin.choria.adapter.iot.type = nats_stream
+plugin.choria.adapter.iot.stream.servers = stan1:4222,stan2:4222
+plugin.choria.adapter.iot.stream.clusterid = prod
+plugin.choria.adapter.iot.ingest.topic = acme.iot
+plugin.choria.adapter.iot.ingest.protocol = reply
+```
+
+This ingest the `acme.iot` topic, rewrite the data and publish it to NATS Streaming `prod` cluster on `stan1:4222` and `stan2:4222`.
+
 ### Configure Choria
 
 You have to supply some basic configuration to the Choria framework, you need to implement the `ConfigProvider` interface, you're welcome to do this yourself but we provide one you can use.  We recommend you use this one so that all backplane managed interface have the same configuration format:
@@ -333,6 +379,7 @@ func (a *App) startBackPlane(ctx context.Context, wg *sync.Waitgroup) error {
             backplane.ManageHealthCheck(a),
             backplane.ManageStopable(a),
             backplane.ManageLogLevel(a),
+            backplane.StartDataPublisher(),
         }
 
         _, err := backplane.Run(ctx, wg, a.config.Management, opts...)
@@ -347,7 +394,7 @@ func (a *App) startBackPlane(ctx context.Context, wg *sync.Waitgroup) error {
 
 Once you call `startBackPlane()` in your startup cycle it will start a Choria instance with the `discovery`, `choria_util` and `backplane` agents, the `backplane` agent will have all the actions listed in the earlier table, your config will be shown in the `info` action and you can discovery it using any of the facts.
 
-If you only supply some of `ManageInfoSource`, `ManagePausable`, `ManageHealthCheck`, `ManageLogLevel` and `ManageStopable` the features of the agent will be selectively disabled as per the table earlier.
+If you only supply some of `ManageInfoSource`, `ManagePausable`, `ManageHealthCheck`, `ManageLogLevel`, `StartDataPublisher` and `ManageStopable` the features of the agent will be selectively disabled as per the table earlier.
 
 All backplane managed services will use the `backplane` agent name, to differentiate the `name` will be used to construct a sub collective name so each app is effectively contained. The upcoming CLI will be built around this design.
 
@@ -496,3 +543,5 @@ Performing info... ✓ 2 / 2
 ```
 
 1 is paused and 1 is not, your logs should also confirm.
+
+Additionally on every `doing work` line data gets published to the NATS network topic `myapp.data` in the Choria format.  You can view these using the a [nats client](https://github.com/nats-io/go-nats/tree/master/examples/nats-sub) or had this been a Choria Broker you could adapt these messages to a NATS Stream using the Choria Adapter Framework.
