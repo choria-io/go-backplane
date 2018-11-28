@@ -1,5 +1,10 @@
 |Date      |Issue |Description                                                                                              |
 |----------|------|---------------------------------------------------------------------------------------------------------|
+|2018/11/28|      |Release 1.1.0                                                                                            |
+|2018/11/18|64    |Support publishing data that the Choria Adapters can re-publish to supported Stream Processing systems   |
+|2018/11/16|46    |Allow backplane to adjust running log levels of applications that support that                           |
+|2018/11/16|59    |Show individual backplane instance facts when `-v` is passed to `info`                                   |
+|2018/11/13|54    |Speed up the CLI discovery process                                                                       |
 |2018/08/08|      |Release 1.0.1                                                                                            |
 |2018/08/27|50    |Emit lifecycle events on startup                                                                         |
 |2018/08/08|      |Release 1.0.0                                                                                            |
