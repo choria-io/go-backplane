@@ -1,5 +1,5 @@
-hash: 1b86fd689a93b35437d27e299d2000e145709078355ea00da354833d6090259f
-updated: 2018-11-28T17:01:04.767271+01:00
+hash: 52074df3b879f9cb6029ac574a6a92cf70b9516b2e0057a83ab0afe019b6ff41
+updated: 2019-01-03T15:39:58.427687+01:00
 imports:
 - name: github.com/alecthomas/template
   version: a0175ee3bccc567396460bf5acd36800cb10c49c
@@ -12,7 +12,7 @@ imports:
   subpackages:
   - quantile
 - name: github.com/choria-io/go-choria
-  version: 684d9b00e1b5d35727bc46bffd3913b2ed45b8e6
+  version: a5d51011f80fd5c6e96b0fd5384c5518c7fff40e
   subpackages:
   - backoff
   - build
@@ -41,19 +41,19 @@ imports:
 - name: github.com/choria-io/go-confkey
   version: 634d2c41860498507b0c7eeb2f8a33b1aa6a809d
 - name: github.com/choria-io/go-lifecycle
-  version: 6433dc8ede9dd3e3170dad048ef897e5088ecc66
+  version: 1abefec262bec96f9581d76f3270c86121356d02
 - name: github.com/choria-io/go-protocol
   version: c3117476636777d60c00a86b2d4b2b8fc56addb4
   subpackages:
   - protocol
   - protocol/v1
 - name: github.com/choria-io/go-security
-  version: 9c90c6ebc9548a8300fff479716bad9c739d6717
+  version: 75654ad2139b915791141ab172d0930bf024fec7
   subpackages:
   - filesec
   - puppetsec
 - name: github.com/choria-io/go-updater
-  version: 8c484a7b2a2a8e4fb51b3db81ff5dad15c512523
+  version: 2e95f9965f469b7b1dcba5b3ea16033413e4273e
 - name: github.com/choria-io/go-validator
   version: 4ce2ef25983faa873cc4bcea0f1ef2a4273d42cc
   subpackages:
@@ -66,7 +66,7 @@ imports:
   - regex
   - shellsafe
 - name: github.com/choria-io/mcorpc-agent-provider
-  version: 279845170e27ad55f55a3ced2c442eb91ad5334d
+  version: 2fb55be47a487f0e8f4c86ed995c5645b8cc4952
   subpackages:
   - mcorpc
   - mcorpc/audit
@@ -77,7 +77,7 @@ imports:
   - mcorpc/golang/discovery
   - mcorpc/golang/rpcutil
 - name: github.com/choria-io/provisioning-agent
-  version: c5300d23e090eda3904af8edb909f267d17825a0
+  version: 1468269c0ca150459cef10d5d9af588550dd029e
   subpackages:
   - agent
 - name: github.com/fatih/color
@@ -95,7 +95,7 @@ imports:
   - gomock
   - mockgen
 - name: github.com/golang/protobuf
-  version: 1918e1ff6ffd2be7bed0553df8650672c3bfe80d
+  version: 52132540909e117f2b98b0694383dc0ab1e1deca
   subpackages:
   - proto
 - name: github.com/hokaccha/go-prettyjson
@@ -118,15 +118,16 @@ imports:
 - name: github.com/nats-io/nuid
   version: 28b996b57a46dd0c2aa3a3dc7fa8780878331d00
 - name: github.com/prometheus/client_golang
-  version: 967789050ba94deca04a5e84cce8ad472ce313c1
+  version: 505eaef017263e299324067d40ca2c48f6a2cf50
   subpackages:
   - prometheus
+  - prometheus/internal
 - name: github.com/prometheus/client_model
   version: 5c3871d89910bfb32f5fcab2aa4b9ec68e65a99f
   subpackages:
   - go
 - name: github.com/prometheus/common
-  version: 7e9e6cabbd393fc208072eedef99188d0ce788b6
+  version: 61f87aac8082fa8c3c5655c7608d7478d46ac2ad
   subpackages:
   - expfmt
   - internal/bitbucket.org/ww/goautoneg
@@ -156,7 +157,7 @@ imports:
   subpackages:
   - ssh/terminal
 - name: golang.org/x/net
-  version: c10e9556a7bc0e7c942242b606f0acf024ad5d6a
+  version: adae6a3d119ae4890b46832a2e88a95adc62b8e7
   subpackages:
   - context
 - name: golang.org/x/sys
