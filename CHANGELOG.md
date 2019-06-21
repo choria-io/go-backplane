@@ -1,5 +1,7 @@
 |Date      |Issue |Description                                                                                              |
 |----------|------|---------------------------------------------------------------------------------------------------------|
+|2019/06/21|      |Release 1.1.1                                                                                            |
+|2019/06/21|      |Support `go mod`                                                                                         |
 |2018/11/28|      |Release 1.1.0                                                                                            |
 |2018/11/18|64    |Support publishing data that the Choria Adapters can re-publish to supported Stream Processing systems   |
 |2018/11/16|46    |Allow backplane to adjust running log levels of applications that support that                           |
