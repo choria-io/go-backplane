@@ -8,7 +8,7 @@ import (
 	"github.com/choria-io/go-protocol/protocol"
 
 	"github.com/choria-io/go-choria/choria"
-	chconf "github.com/choria-io/go-choria/config"
+	chconf "github.com/choria-io/go-config"
 )
 
 // Config configures the backplane
