@@ -22,9 +22,9 @@ import (
 	"github.com/sirupsen/logrus"
 
 	"github.com/choria-io/go-choria/choria"
-	"github.com/choria-io/go-choria/config"
 	"github.com/choria-io/go-client/client"
 	"github.com/choria-io/go-client/discovery/broadcast"
+	"github.com/choria-io/go-config"
 	"github.com/choria-io/go-protocol/protocol"
 	rpcc "github.com/choria-io/mcorpc-agent-provider/mcorpc/client"
 
