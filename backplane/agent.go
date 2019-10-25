@@ -331,7 +331,7 @@ func AgentDDL() *agent.DDL {
 		Name:        "ping",
 		Description: "Backplane communications test",
 		Display:     "failed",
-		Input:       json.RawMessage("{}"),
+		Input:       make(map[string]*agent.ActionInputItem),
 		Output:      make(map[string]*agent.ActionOutputItem),
 	}
 
@@ -341,7 +341,7 @@ func AgentDDL() *agent.DDL {
 		Name:        "info",
 		Description: "Information about the managed service",
 		Display:     "always",
-		Input:       json.RawMessage("{}"),
+		Input:       make(map[string]*agent.ActionInputItem),
 		Output:      make(map[string]*agent.ActionOutputItem),
 	}
 
@@ -351,7 +351,7 @@ func AgentDDL() *agent.DDL {
 		Name:        "shutdown",
 		Description: "Terminates the managed service",
 		Display:     "failed",
-		Input:       json.RawMessage("{}"),
+		Input:       make(map[string]*agent.ActionInputItem),
 		Output:      make(map[string]*agent.ActionOutputItem),
 	}
 
@@ -361,7 +361,7 @@ func AgentDDL() *agent.DDL {
 		Name:        "health",
 		Description: "Checks the health of the managed service",
 		Display:     "failed",
-		Input:       json.RawMessage("{}"),
+		Input:       make(map[string]*agent.ActionInputItem),
 		Output:      make(map[string]*agent.ActionOutputItem),
 	}
 
@@ -372,7 +372,7 @@ func AgentDDL() *agent.DDL {
 			Name:        action,
 			Description: action,
 			Display:     "always",
-			Input:       json.RawMessage("{}"),
+			Input:       make(map[string]*agent.ActionInputItem),
 			Output:      make(map[string]*agent.ActionOutputItem),
 		}
 
@@ -384,7 +384,7 @@ func AgentDDL() *agent.DDL {
 			Name:        action,
 			Description: action,
 			Display:     "always",
-			Input:       json.RawMessage("{}"),
+			Input:       make(map[string]*agent.ActionInputItem),
 			Output:      make(map[string]*agent.ActionOutputItem),
 		}
 
