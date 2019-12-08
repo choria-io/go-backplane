@@ -1,5 +1,7 @@
 |Date      |Issue |Description                                                                                              |
 |----------|------|---------------------------------------------------------------------------------------------------------|
+|2019/12/08|      |Release 1.2.0                                                                                            |
+|2019/12/08|72    |Improve embedded DDL to support output items and aggregators                                             |
 |2019/06/21|      |Release 1.1.1                                                                                            |
 |2019/06/21|      |Support `go mod`                                                                                         |
 |2018/11/28|      |Release 1.1.0                                                                                            |
