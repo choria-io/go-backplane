@@ -332,7 +332,19 @@ func AgentDDL() *agent.DDL {
 		Description: "Backplane communications test",
 		Display:     "failed",
 		Input:       make(map[string]*agent.ActionInputItem),
-		Output:      make(map[string]*agent.ActionOutputItem),
+		Output: map[string]*agent.ActionOutputItem{
+			"version": &agent.ActionOutputItem{
+				Description: "The version of the Choria Backplane system in use",
+				DisplayAs:   "Choria Backplane",
+				Type:        "string",
+			},
+		},
+		Aggregation: []agent.ActionAggregateItem{
+			agent.ActionAggregateItem{
+				Function:  "summary",
+				Arguments: json.RawMessage(`["version"]`),
+			},
+		},
 	}
 
 	ddl.Actions = append(ddl.Actions, act)
@@ -342,7 +354,75 @@ func AgentDDL() *agent.DDL {
 		Description: "Information about the managed service",
 		Display:     "always",
 		Input:       make(map[string]*agent.ActionInputItem),
-		Output:      make(map[string]*agent.ActionOutputItem),
+		Output: map[string]*agent.ActionOutputItem{
+			"backplane_version": &agent.ActionOutputItem{
+				Description: "The version of the Choria Backplane system in use",
+				DisplayAs:   "Choria Backplane",
+				Type:        "string",
+			},
+
+			"version": &agent.ActionOutputItem{
+				Description: "Service Version",
+				DisplayAs:   "Version",
+				Type:        "string",
+			},
+
+			"healthy": &agent.ActionOutputItem{
+				Description: "Health Status",
+				DisplayAs:   "Healthy",
+				Type:        "boolean",
+			},
+
+			"loglevel": &agent.ActionOutputItem{
+				Description: "Active log level",
+				DisplayAs:   "Log Level",
+				Type:        "string",
+			},
+
+			"healthcheck_feature": &agent.ActionOutputItem{
+				Description: "If the HealthCheckable interface is used",
+				DisplayAs:   "Health Feature",
+				Type:        "boolean",
+			},
+
+			"pause_feature": &agent.ActionOutputItem{
+				Description: "If the Pausable interface is used",
+				DisplayAs:   "Circuit Breaker Feature",
+				Type:        "boolean",
+			},
+
+			"shutdown_feature": &agent.ActionOutputItem{
+				Description: "If the Stopable interface is used",
+				DisplayAs:   "Shutdown Feature",
+				Type:        "boolean",
+			},
+
+			"facts_feature": &agent.ActionOutputItem{
+				Description: "If the InfoSource interface is used",
+				DisplayAs:   "Facts Feature",
+				Type:        "boolean",
+			},
+
+			"loglevel_feature": &agent.ActionOutputItem{
+				Description: "If the LogLevelSetable interface is used",
+				DisplayAs:   "Log Level Feature",
+				Type:        "boolean",
+			},
+		},
+		Aggregation: []agent.ActionAggregateItem{
+			agent.ActionAggregateItem{
+				Function:  "summary",
+				Arguments: json.RawMessage(`["version"]`),
+			},
+			agent.ActionAggregateItem{
+				Function:  "summary",
+				Arguments: json.RawMessage(`["paused"]`),
+			},
+			agent.ActionAggregateItem{
+				Function:  "summary",
+				Arguments: json.RawMessage(`["healthy"]`),
+			},
+		},
 	}
 
 	ddl.Actions = append(ddl.Actions, act)
@@ -352,7 +432,19 @@ func AgentDDL() *agent.DDL {
 		Description: "Terminates the managed service",
 		Display:     "failed",
 		Input:       make(map[string]*agent.ActionInputItem),
-		Output:      make(map[string]*agent.ActionOutputItem),
+		Output: map[string]*agent.ActionOutputItem{
+			"delay": &agent.ActionOutputItem{
+				Description: "How long after running the action the shutdown will be initiated",
+				DisplayAs:   "Delay",
+				Type:        "string",
+			},
+		},
+		Aggregation: []agent.ActionAggregateItem{
+			agent.ActionAggregateItem{
+				Function:  "summary",
+				Arguments: json.RawMessage(`["delay"]`),
+			},
+		},
 	}
 
 	ddl.Actions = append(ddl.Actions, act)
@@ -362,7 +454,24 @@ func AgentDDL() *agent.DDL {
 		Description: "Checks the health of the managed service",
 		Display:     "failed",
 		Input:       make(map[string]*agent.ActionInputItem),
-		Output:      make(map[string]*agent.ActionOutputItem),
+		Output: map[string]*agent.ActionOutputItem{
+			"result": &agent.ActionOutputItem{
+				Description: "The result from the check method",
+				DisplayAs:   "Result",
+				Type:        "string",
+			},
+			"healthy": &agent.ActionOutputItem{
+				Description: "Status indicator for the checked service",
+				DisplayAs:   "Healthy",
+				Type:        "boolean",
+			},
+		},
+		Aggregation: []agent.ActionAggregateItem{
+			agent.ActionAggregateItem{
+				Function:  "summary",
+				Arguments: json.RawMessage(`["healthy"]`),
+			},
+		},
 	}
 
 	ddl.Actions = append(ddl.Actions, act)
@@ -373,7 +482,19 @@ func AgentDDL() *agent.DDL {
 			Description: action,
 			Display:     "always",
 			Input:       make(map[string]*agent.ActionInputItem),
-			Output:      make(map[string]*agent.ActionOutputItem),
+			Output: map[string]*agent.ActionOutputItem{
+				"paused": &agent.ActionOutputItem{
+					Description: "Circuit Breaker pause state",
+					DisplayAs:   "Paused",
+					Type:        "boolean",
+				},
+			},
+			Aggregation: []agent.ActionAggregateItem{
+				agent.ActionAggregateItem{
+					Function:  "summary",
+					Arguments: json.RawMessage(`["paused"]`),
+				},
+			},
 		}
 
 		ddl.Actions = append(ddl.Actions, act)
@@ -385,7 +506,19 @@ func AgentDDL() *agent.DDL {
 			Description: action,
 			Display:     "always",
 			Input:       make(map[string]*agent.ActionInputItem),
-			Output:      make(map[string]*agent.ActionOutputItem),
+			Output: map[string]*agent.ActionOutputItem{
+				"level": &agent.ActionOutputItem{
+					Description: "Log level that was activated",
+					DisplayAs:   "Log Level",
+					Type:        "string",
+				},
+			},
+			Aggregation: []agent.ActionAggregateItem{
+				agent.ActionAggregateItem{
+					Function:  "summary",
+					Arguments: json.RawMessage(`["level"]`),
+				},
+			},
 		}
 
 		ddl.Actions = append(ddl.Actions, act)
