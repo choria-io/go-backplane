@@ -3,7 +3,7 @@ module github.com/choria-io/go-backplane
 go 1.13
 
 require (
-	github.com/choria-io/go-choria v0.13.1-0.20191222210956-2291fc70abd6
+	github.com/choria-io/go-choria v0.13.1
 	github.com/choria-io/go-client v0.5.3
 	github.com/choria-io/go-config v0.0.6
 	github.com/choria-io/go-protocol v1.4.0
