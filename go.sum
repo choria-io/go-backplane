@@ -72,6 +72,8 @@ github.com/choria-io/go-choria v0.13.0 h1:FNzwYEK0tFt4Hs8TMqhw3C3alPlkmP6+HH3oE2
 github.com/choria-io/go-choria v0.13.0/go.mod h1:DPzNux8hy4oa3WKJGcg/bLUi0CUnvUYA66BDR61iQBo=
 github.com/choria-io/go-choria v0.13.1-0.20191222210956-2291fc70abd6 h1:Df9BqYaaSGdrqh3U1pGBPoy6tkfINAI+8zSiEWMri3A=
 github.com/choria-io/go-choria v0.13.1-0.20191222210956-2291fc70abd6/go.mod h1:GALcrozOSIF5m4Ksx/ROhbDK6bPjw+7lnMKkFifKizk=
+github.com/choria-io/go-choria v0.13.1 h1:nAPxGAAW90kGvrfjk11j/wig4yksLHcco/FvXQxPMBc=
+github.com/choria-io/go-choria v0.13.1/go.mod h1:gMSs98nHkEwOyjdPt6wv4RwSuVvfM7lAlVU/UfQPdLg=
 github.com/choria-io/go-client v0.4.3-0.20190626102458-2ce4fef30af5/go.mod h1:2Af0IWg9334voG0spr2kwoh5UJqR2krSYIKYoHgJgFk=
 github.com/choria-io/go-client v0.4.3-0.20190626150123-ddebe7dca345/go.mod h1:2tyj9CRzqew0k6icWnWkvwNfu+WXUNdvtm+Gu3RVhYg=
 github.com/choria-io/go-client v0.5.0/go.mod h1:2tyj9CRzqew0k6icWnWkvwNfu+WXUNdvtm+Gu3RVhYg=
@@ -152,6 +154,8 @@ github.com/circonus-labs/circonusllhist v0.1.3/go.mod h1:kMXHVDlOchFAehlya5ePtbp
 github.com/client9/misspell v0.3.4/go.mod h1:qj6jICC3Q7zFZvVWo7KLAzC3yx5G7kyvSDkc90ppPyw=
 github.com/cloudevents/sdk-go v0.10.1 h1:/oxnOy279xbNR3IeU/yfPvyP9ojL/pz72vclM2dflhY=
 github.com/cloudevents/sdk-go v0.10.1/go.mod h1:YVr4nbqDaO6tjAO2ZeNM5WuI0o4qPCtdebuT34wpoyE=
+github.com/cloudevents/sdk-go v0.10.2 h1:CAqHqDHmBkCG4OUeUBt7q2Ql8KV25U+bgPUtlcJelZ4=
+github.com/cloudevents/sdk-go v0.10.2/go.mod h1:EHG6NmU3XkIeuueER6+vbnhYfWlgVlfUQVzPC+UK7ao=
 github.com/cpuguy83/go-md2man v1.0.10/go.mod h1:SmD6nW6nTyfqj6ABTjUi3V3JVMnlJmwcJI5acqYI6dE=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
@@ -351,6 +355,8 @@ github.com/nats-io/stan.go v0.4.5/go.mod h1:Ji7mK6gRZJSH1nc3ZJH6vi7zn/QnZhpR9Arm
 github.com/nats-io/stan.go v0.5.0/go.mod h1:dYqB+vMN3C2F9pT1FRQpg9eHbjPj6mP0yYuyBNuXHZE=
 github.com/nats-io/stan.go v0.5.2 h1:/DfflNAztFQVjssQ7hW8d9gWl3hU+SJ3mWjokaQEsog=
 github.com/nats-io/stan.go v0.5.2/go.mod h1:eIcD5bi3pqbHT/xIIvXMwvzXYElgouBvaVRftaE+eac=
+github.com/nats-io/stan.go v0.6.0 h1:26IJPeykh88d8KVLT4jJCIxCyUBOC5/IQup8oWD/QYY=
+github.com/nats-io/stan.go v0.6.0/go.mod h1:eIcD5bi3pqbHT/xIIvXMwvzXYElgouBvaVRftaE+eac=
 github.com/olekukonko/tablewriter v0.0.1/go.mod h1:vsDQFd/mU46D+Z4whnwzcISnGGzXWMclvtLoiIKAKIo=
 github.com/onsi/ginkgo v1.6.0/go.mod h1:lLunBs/Ym6LB5Z9jYTR76FiuTmxDTDusOGeTQH+WWjE=
 github.com/onsi/ginkgo v1.7.0/go.mod h1:lLunBs/Ym6LB5Z9jYTR76FiuTmxDTDusOGeTQH+WWjE=
@@ -380,6 +386,8 @@ github.com/pkg/errors v0.0.0-20181023235946-059132a15dd0/go.mod h1:bwawxfHBFNV+L
 github.com/pkg/errors v0.8.0/go.mod h1:bwawxfHBFNV+L2hUp1rHADufV3IMtnDRdf1r5NINEl0=
 github.com/pkg/errors v0.8.1 h1:iURUrRGxPUNPdy5/HRSm+Yj6okJ6UtLINN0Q9M4+h3I=
 github.com/pkg/errors v0.8.1/go.mod h1:bwawxfHBFNV+L2hUp1rHADufV3IMtnDRdf1r5NINEl0=
+github.com/pkg/errors v0.9.0 h1:J8lpUdobwIeCI7OiSxHqEwJUKvJwicL5+3v1oe2Yb4k=
+github.com/pkg/errors v0.9.0/go.mod h1:bwawxfHBFNV+L2hUp1rHADufV3IMtnDRdf1r5NINEl0=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
 github.com/prometheus/client_golang v0.0.0-20181025174421-f30f42803563/go.mod h1:7SWBe2y4D6OKWSNQJUaRYU/AaXPKyh/dDVn+NZz0KFw=
