@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"sync"
 
+	gorpc "github.com/choria-io/go-choria/providers/agent/mcorpc/golang"
 	"github.com/choria-io/go-choria/server"
-	gorpc "github.com/choria-io/mcorpc-agent-provider/mcorpc/golang"
 )
 
 func (m *Management) startServer(ctx context.Context, wg *sync.WaitGroup) (err error) {

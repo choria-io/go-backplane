@@ -16,17 +16,17 @@ import (
 	"github.com/hokaccha/go-prettyjson"
 
 	"github.com/choria-io/go-backplane/backplane"
-	"github.com/choria-io/mcorpc-agent-provider/mcorpc"
+	"github.com/choria-io/go-choria/providers/agent/mcorpc"
 	"github.com/fatih/color"
 
 	"github.com/sirupsen/logrus"
 
 	"github.com/choria-io/go-choria/choria"
-	"github.com/choria-io/go-client/client"
-	"github.com/choria-io/go-client/discovery/broadcast"
-	"github.com/choria-io/go-config"
-	"github.com/choria-io/go-protocol/protocol"
-	rpcc "github.com/choria-io/mcorpc-agent-provider/mcorpc/client"
+	"github.com/choria-io/go-choria/client/client"
+	"github.com/choria-io/go-choria/client/discovery/broadcast"
+	"github.com/choria-io/go-choria/config"
+	"github.com/choria-io/go-choria/protocol"
+	rpcc "github.com/choria-io/go-choria/providers/agent/mcorpc/client"
 
 	kingpin "gopkg.in/alecthomas/kingpin.v2"
 )
