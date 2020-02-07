@@ -5,10 +5,10 @@ import (
 	"regexp"
 	"time"
 
-	"github.com/choria-io/go-protocol/protocol"
+	"github.com/choria-io/go-choria/protocol"
 
 	"github.com/choria-io/go-choria/choria"
-	chconf "github.com/choria-io/go-config"
+	chconf "github.com/choria-io/go-choria/config"
 )
 
 // Config configures the backplane

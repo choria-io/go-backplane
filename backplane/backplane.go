@@ -19,8 +19,8 @@ import (
 	"fmt"
 	"sync"
 
+	"github.com/choria-io/go-choria/providers/agent/mcorpc"
 	"github.com/choria-io/go-choria/server"
-	"github.com/choria-io/mcorpc-agent-provider/mcorpc"
 	"github.com/sirupsen/logrus"
 )
 
