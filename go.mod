@@ -1,12 +1,12 @@
 module github.com/choria-io/go-backplane
 
-go 1.13
+go 1.14
 
 require (
-	github.com/choria-io/go-choria v0.13.2-0.20200206160755-b26177d80f81
-	github.com/fatih/color v1.9.0
-	github.com/hokaccha/go-prettyjson v0.0.0-20190818114111-108c894c2c0e
-	github.com/sirupsen/logrus v1.4.2
+	github.com/choria-io/go-choria v0.19.1-0.20210126160723-ae417f5df54f
+	github.com/fatih/color v1.10.0
+	github.com/hokaccha/go-prettyjson v0.0.0-20210113012101-fb4e108d2519
+	github.com/sirupsen/logrus v1.7.0
 	gopkg.in/alecthomas/kingpin.v2 v2.2.6
-	gopkg.in/yaml.v2 v2.2.5
+	gopkg.in/yaml.v2 v2.4.0
 )

@@ -10,6 +10,7 @@ import (
 	"github.com/choria-io/go-choria/choria"
 	"github.com/choria-io/go-choria/providers/agent/mcorpc"
 	"github.com/choria-io/go-choria/providers/agent/mcorpc/ddl/agent"
+	"github.com/choria-io/go-choria/providers/agent/mcorpc/ddl/common"
 	"github.com/choria-io/go-choria/server/agents"
 )
 
@@ -331,16 +332,16 @@ func AgentDDL() *agent.DDL {
 		Name:        "ping",
 		Description: "Backplane communications test",
 		Display:     "failed",
-		Input:       make(map[string]*agent.ActionInputItem),
-		Output: map[string]*agent.ActionOutputItem{
-			"version": &agent.ActionOutputItem{
+		Input:       make(map[string]*common.InputItem),
+		Output: map[string]*common.OutputItem{
+			"version": {
 				Description: "The version of the Choria Backplane system in use",
 				DisplayAs:   "Choria Backplane",
 				Type:        "string",
 			},
 		},
 		Aggregation: []agent.ActionAggregateItem{
-			agent.ActionAggregateItem{
+			{
 				Function:  "summary",
 				Arguments: json.RawMessage(`["version"]`),
 			},
@@ -353,72 +354,72 @@ func AgentDDL() *agent.DDL {
 		Name:        "info",
 		Description: "Information about the managed service",
 		Display:     "always",
-		Input:       make(map[string]*agent.ActionInputItem),
-		Output: map[string]*agent.ActionOutputItem{
-			"backplane_version": &agent.ActionOutputItem{
+		Input:       make(map[string]*common.InputItem),
+		Output: map[string]*common.OutputItem{
+			"backplane_version": {
 				Description: "The version of the Choria Backplane system in use",
 				DisplayAs:   "Choria Backplane",
 				Type:        "string",
 			},
 
-			"version": &agent.ActionOutputItem{
+			"version": {
 				Description: "Service Version",
 				DisplayAs:   "Version",
 				Type:        "string",
 			},
 
-			"healthy": &agent.ActionOutputItem{
+			"healthy": {
 				Description: "Health Status",
 				DisplayAs:   "Healthy",
 				Type:        "boolean",
 			},
 
-			"loglevel": &agent.ActionOutputItem{
+			"loglevel": {
 				Description: "Active log level",
 				DisplayAs:   "Log Level",
 				Type:        "string",
 			},
 
-			"healthcheck_feature": &agent.ActionOutputItem{
+			"healthcheck_feature": {
 				Description: "If the HealthCheckable interface is used",
 				DisplayAs:   "Health Feature",
 				Type:        "boolean",
 			},
 
-			"pause_feature": &agent.ActionOutputItem{
+			"pause_feature": {
 				Description: "If the Pausable interface is used",
 				DisplayAs:   "Circuit Breaker Feature",
 				Type:        "boolean",
 			},
 
-			"shutdown_feature": &agent.ActionOutputItem{
+			"shutdown_feature": {
 				Description: "If the Stopable interface is used",
 				DisplayAs:   "Shutdown Feature",
 				Type:        "boolean",
 			},
 
-			"facts_feature": &agent.ActionOutputItem{
+			"facts_feature": {
 				Description: "If the InfoSource interface is used",
 				DisplayAs:   "Facts Feature",
 				Type:        "boolean",
 			},
 
-			"loglevel_feature": &agent.ActionOutputItem{
+			"loglevel_feature": {
 				Description: "If the LogLevelSetable interface is used",
 				DisplayAs:   "Log Level Feature",
 				Type:        "boolean",
 			},
 		},
 		Aggregation: []agent.ActionAggregateItem{
-			agent.ActionAggregateItem{
+			{
 				Function:  "summary",
 				Arguments: json.RawMessage(`["version"]`),
 			},
-			agent.ActionAggregateItem{
+			{
 				Function:  "summary",
 				Arguments: json.RawMessage(`["paused"]`),
 			},
-			agent.ActionAggregateItem{
+			{
 				Function:  "summary",
 				Arguments: json.RawMessage(`["healthy"]`),
 			},
@@ -431,16 +432,16 @@ func AgentDDL() *agent.DDL {
 		Name:        "shutdown",
 		Description: "Terminates the managed service",
 		Display:     "failed",
-		Input:       make(map[string]*agent.ActionInputItem),
-		Output: map[string]*agent.ActionOutputItem{
-			"delay": &agent.ActionOutputItem{
+		Input:       make(map[string]*common.InputItem),
+		Output: map[string]*common.OutputItem{
+			"delay": {
 				Description: "How long after running the action the shutdown will be initiated",
 				DisplayAs:   "Delay",
 				Type:        "string",
 			},
 		},
 		Aggregation: []agent.ActionAggregateItem{
-			agent.ActionAggregateItem{
+			{
 				Function:  "summary",
 				Arguments: json.RawMessage(`["delay"]`),
 			},
@@ -453,21 +454,21 @@ func AgentDDL() *agent.DDL {
 		Name:        "health",
 		Description: "Checks the health of the managed service",
 		Display:     "failed",
-		Input:       make(map[string]*agent.ActionInputItem),
-		Output: map[string]*agent.ActionOutputItem{
-			"result": &agent.ActionOutputItem{
+		Input:       make(map[string]*common.InputItem),
+		Output: map[string]*common.OutputItem{
+			"result": {
 				Description: "The result from the check method",
 				DisplayAs:   "Result",
 				Type:        "string",
 			},
-			"healthy": &agent.ActionOutputItem{
+			"healthy": {
 				Description: "Status indicator for the checked service",
 				DisplayAs:   "Healthy",
 				Type:        "boolean",
 			},
 		},
 		Aggregation: []agent.ActionAggregateItem{
-			agent.ActionAggregateItem{
+			{
 				Function:  "summary",
 				Arguments: json.RawMessage(`["healthy"]`),
 			},
@@ -481,16 +482,16 @@ func AgentDDL() *agent.DDL {
 			Name:        action,
 			Description: action,
 			Display:     "always",
-			Input:       make(map[string]*agent.ActionInputItem),
-			Output: map[string]*agent.ActionOutputItem{
-				"paused": &agent.ActionOutputItem{
+			Input:       make(map[string]*common.InputItem),
+			Output: map[string]*common.OutputItem{
+				"paused": {
 					Description: "Circuit Breaker pause state",
 					DisplayAs:   "Paused",
 					Type:        "boolean",
 				},
 			},
 			Aggregation: []agent.ActionAggregateItem{
-				agent.ActionAggregateItem{
+				{
 					Function:  "summary",
 					Arguments: json.RawMessage(`["paused"]`),
 				},
@@ -505,16 +506,16 @@ func AgentDDL() *agent.DDL {
 			Name:        action,
 			Description: action,
 			Display:     "always",
-			Input:       make(map[string]*agent.ActionInputItem),
-			Output: map[string]*agent.ActionOutputItem{
-				"level": &agent.ActionOutputItem{
+			Input:       make(map[string]*common.InputItem),
+			Output: map[string]*common.OutputItem{
+				"level": {
 					Description: "Log level that was activated",
 					DisplayAs:   "Log Level",
 					Type:        "string",
 				},
 			},
 			Aggregation: []agent.ActionAggregateItem{
-				agent.ActionAggregateItem{
+				{
 					Function:  "summary",
 					Arguments: json.RawMessage(`["level"]`),
 				},
