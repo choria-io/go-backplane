@@ -31,7 +31,7 @@ func (m *Management) StartRegistration(ctx context.Context, wg *sync.WaitGroup, 
 		select {
 		case msg := <-m.outbox:
 			output <- &data.RegistrationItem{
-				Data:        &msg.Data,
+				Data:        msg.Data,
 				Destination: msg.Destination,
 				TargetAgent: msg.TargetAgent,
 			}
