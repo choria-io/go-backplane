@@ -23,10 +23,10 @@ import (
 
 	"github.com/choria-io/go-choria/choria"
 	"github.com/choria-io/go-choria/client/client"
-	"github.com/choria-io/go-choria/client/discovery/broadcast"
 	"github.com/choria-io/go-choria/config"
 	"github.com/choria-io/go-choria/protocol"
 	rpcc "github.com/choria-io/go-choria/providers/agent/mcorpc/client"
+	"github.com/choria-io/go-choria/providers/discovery/broadcast"
 
 	kingpin "gopkg.in/alecthomas/kingpin.v2"
 )
