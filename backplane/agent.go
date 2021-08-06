@@ -25,7 +25,7 @@ type Pausable interface {
 	// Flip should invert the pause state in an atomic manner
 	Flip()
 
-	// Should report the pause state
+	// Paused should report the pause state
 	Paused() bool
 }
 
