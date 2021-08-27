@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/choria-io/go-choria/choria"
+	"github.com/choria-io/go-choria/inter"
 	"github.com/choria-io/go-choria/providers/agent/mcorpc"
 	"github.com/choria-io/go-choria/providers/agent/mcorpc/ddl/agent"
 	"github.com/choria-io/go-choria/providers/agent/mcorpc/ddl/common"
@@ -140,7 +140,7 @@ func (m *Management) startAgents(ctx context.Context) (err error) {
 }
 
 func (m *Management) roAction(a mcorpc.Action) mcorpc.Action {
-	return func(ctx context.Context, req *mcorpc.Request, reply *mcorpc.Reply, agent *mcorpc.Agent, conn choria.ConnectorInfo) {
+	return func(ctx context.Context, req *mcorpc.Request, reply *mcorpc.Reply, agent *mcorpc.Agent, conn inter.ConnectorInfo) {
 		if !m.cfg.auth.ROAllowed(req.CallerID) {
 			reply.Statuscode = mcorpc.Aborted
 			reply.Statusmsg = "You are not authorized to call this agent or action."
@@ -156,7 +156,7 @@ func (m *Management) roAction(a mcorpc.Action) mcorpc.Action {
 }
 
 func (m *Management) fullAction(a mcorpc.Action) mcorpc.Action {
-	return func(ctx context.Context, req *mcorpc.Request, reply *mcorpc.Reply, agent *mcorpc.Agent, conn choria.ConnectorInfo) {
+	return func(ctx context.Context, req *mcorpc.Request, reply *mcorpc.Reply, agent *mcorpc.Agent, conn inter.ConnectorInfo) {
 		if !m.cfg.auth.FullAllowed(req.CallerID) {
 			reply.Statuscode = mcorpc.Aborted
 			reply.Statusmsg = "You are not authorized to call this agent or action."
@@ -171,41 +171,41 @@ func (m *Management) fullAction(a mcorpc.Action) mcorpc.Action {
 	}
 }
 
-func (m *Management) debugLevelAction(ctx context.Context, req *mcorpc.Request, reply *mcorpc.Reply, agent *mcorpc.Agent, conn choria.ConnectorInfo) {
+func (m *Management) debugLevelAction(ctx context.Context, req *mcorpc.Request, reply *mcorpc.Reply, agent *mcorpc.Agent, conn inter.ConnectorInfo) {
 	m.cfg.logsetable.SetLogLevel(DebugLevel)
 	reply.Data = &LogLevelReply{
 		Level: "debug",
 	}
 }
 
-func (m *Management) infoLevelAction(ctx context.Context, req *mcorpc.Request, reply *mcorpc.Reply, agent *mcorpc.Agent, conn choria.ConnectorInfo) {
+func (m *Management) infoLevelAction(ctx context.Context, req *mcorpc.Request, reply *mcorpc.Reply, agent *mcorpc.Agent, conn inter.ConnectorInfo) {
 	m.cfg.logsetable.SetLogLevel(InfoLevel)
 	reply.Data = &LogLevelReply{
 		Level: "info",
 	}
 }
 
-func (m *Management) warnLevelAction(ctx context.Context, req *mcorpc.Request, reply *mcorpc.Reply, agent *mcorpc.Agent, conn choria.ConnectorInfo) {
+func (m *Management) warnLevelAction(ctx context.Context, req *mcorpc.Request, reply *mcorpc.Reply, agent *mcorpc.Agent, conn inter.ConnectorInfo) {
 	m.cfg.logsetable.SetLogLevel(WarnLevel)
 	reply.Data = &LogLevelReply{
 		Level: "warning",
 	}
 }
 
-func (m *Management) critLevelAction(ctx context.Context, req *mcorpc.Request, reply *mcorpc.Reply, agent *mcorpc.Agent, conn choria.ConnectorInfo) {
+func (m *Management) critLevelAction(ctx context.Context, req *mcorpc.Request, reply *mcorpc.Reply, agent *mcorpc.Agent, conn inter.ConnectorInfo) {
 	m.cfg.logsetable.SetLogLevel(CriticalLevel)
 	reply.Data = &LogLevelReply{
 		Level: "critical",
 	}
 }
 
-func (m *Management) pingAction(ctx context.Context, req *mcorpc.Request, reply *mcorpc.Reply, agent *mcorpc.Agent, conn choria.ConnectorInfo) {
+func (m *Management) pingAction(ctx context.Context, req *mcorpc.Request, reply *mcorpc.Reply, agent *mcorpc.Agent, conn inter.ConnectorInfo) {
 	reply.Data = &PingReply{
 		Version: agent.Metadata().Version,
 	}
 }
 
-func (m *Management) healthAction(ctx context.Context, req *mcorpc.Request, reply *mcorpc.Reply, agent *mcorpc.Agent, conn choria.ConnectorInfo) {
+func (m *Management) healthAction(ctx context.Context, req *mcorpc.Request, reply *mcorpc.Reply, agent *mcorpc.Agent, conn inter.ConnectorInfo) {
 	r, ok := m.cfg.healthcheckable.HealthCheck()
 
 	j, err := json.Marshal(r)
@@ -219,7 +219,7 @@ func (m *Management) healthAction(ctx context.Context, req *mcorpc.Request, repl
 	}
 }
 
-func (m *Management) shutdownAction(ctx context.Context, req *mcorpc.Request, reply *mcorpc.Reply, agent *mcorpc.Agent, conn choria.ConnectorInfo) {
+func (m *Management) shutdownAction(ctx context.Context, req *mcorpc.Request, reply *mcorpc.Reply, agent *mcorpc.Agent, conn inter.ConnectorInfo) {
 	delay := time.Duration(rand.Intn(int(m.cfg.maxStopDelay))) + time.Second
 
 	r := func(d time.Duration) {
@@ -237,25 +237,25 @@ func (m *Management) shutdownAction(ctx context.Context, req *mcorpc.Request, re
 	}
 }
 
-func (m *Management) pauseAction(ctx context.Context, req *mcorpc.Request, reply *mcorpc.Reply, agent *mcorpc.Agent, conn choria.ConnectorInfo) {
+func (m *Management) pauseAction(ctx context.Context, req *mcorpc.Request, reply *mcorpc.Reply, agent *mcorpc.Agent, conn inter.ConnectorInfo) {
 	m.cfg.pausable.Pause()
 
 	m.pinfo(reply)
 }
 
-func (m *Management) resumeAction(ctx context.Context, req *mcorpc.Request, reply *mcorpc.Reply, agent *mcorpc.Agent, conn choria.ConnectorInfo) {
+func (m *Management) resumeAction(ctx context.Context, req *mcorpc.Request, reply *mcorpc.Reply, agent *mcorpc.Agent, conn inter.ConnectorInfo) {
 	m.cfg.pausable.Resume()
 
 	m.pinfo(reply)
 }
 
-func (m *Management) flipAction(ctx context.Context, req *mcorpc.Request, reply *mcorpc.Reply, agent *mcorpc.Agent, conn choria.ConnectorInfo) {
+func (m *Management) flipAction(ctx context.Context, req *mcorpc.Request, reply *mcorpc.Reply, agent *mcorpc.Agent, conn inter.ConnectorInfo) {
 	m.cfg.pausable.Flip()
 
 	m.pinfo(reply)
 }
 
-func (m *Management) infoAction(ctx context.Context, req *mcorpc.Request, reply *mcorpc.Reply, agent *mcorpc.Agent, conn choria.ConnectorInfo) {
+func (m *Management) infoAction(ctx context.Context, req *mcorpc.Request, reply *mcorpc.Reply, agent *mcorpc.Agent, conn inter.ConnectorInfo) {
 	info := &InfoReply{
 		BackplaneVersion: agent.Metadata().Version,
 		Version:          "unknown",
